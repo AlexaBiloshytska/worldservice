@@ -1,4 +1,4 @@
 package alexa.com.worldservice.dao;
 
-public class CountryDao {
+public interface CountryDao {
 }
