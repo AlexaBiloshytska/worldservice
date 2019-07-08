@@ -1,10 +1,11 @@
 package alexa.com.worldservice.servlet.view;
 
-import alexa.com.worldservice.entity.Country;
+import alexa.com.worldservice.ServiceLocator;
 import alexa.com.worldservice.entity.CountryLanguageStatistics;
 import alexa.com.worldservice.service.CountryService;
-import alexa.com.worldservice.ServiceLocator;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,16 +17,22 @@ import java.util.List;
 
 @WebServlet(urlPatterns = "/countries")
 public class CountryServlet extends HttpServlet {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long startTime = System.currentTimeMillis();
+        logger.info("Start getting country language statistics");
+
         List<CountryLanguageStatistics> countries = countryService.getStatistics();
 
         XmlMapper xmlMapper = new XmlMapper();
         String xml = xmlMapper.writeValueAsString(countries);
+
         response.getWriter().print(xml);
 
+        logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
     }
 
 }

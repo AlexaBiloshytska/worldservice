@@ -14,16 +14,6 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public List<Country> getAll() {
-        return countryDao.getAll();
-    }
-
-    @Override
-    public void add(Country country) {
-
-    }
-
-    @Override
     public List<CountryLanguageStatistics> getStatistics() {
         return countryDao.getStatistics();
     }

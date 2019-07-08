@@ -7,35 +7,19 @@ import java.sql.SQLException;
 
 public class CountryLanguageMapper {
     public CountryLanguageStatistics mapRow(ResultSet resultSet) throws SQLException {
-        String code = resultSet.getString("code");
-        String name = resultSet.getString("name");
-        String continent = resultSet.getString("continent");
-        String region = resultSet.getString("region");
-        Float  surfaceArea = resultSet.getFloat("surfacearea");
-        Integer indepYear = resultSet.getInt("indepyear");
-        Integer population = resultSet.getInt("population");
-        String language = resultSet.getString("language");
-        Boolean isOfficial = resultSet.getBoolean("isofficial");
-        Integer percentage = resultSet.getInt("percentage");
 
         CountryLanguageStatistics countryLanguageStatistics = new CountryLanguageStatistics();
-        countryLanguageStatistics.setCode(code);
-        countryLanguageStatistics.setName(name);
-        countryLanguageStatistics.setContinent(continent);
-        countryLanguageStatistics.setRegion(region);
-        countryLanguageStatistics.setSurfaceArea(surfaceArea);
-        countryLanguageStatistics.setIndepYear(indepYear);
-        countryLanguageStatistics.setPopulation(population);
-        countryLanguageStatistics.setLanguage(language);
-        countryLanguageStatistics.setOficial(isOfficial);
-        countryLanguageStatistics.setPercentage(percentage);
-
+        countryLanguageStatistics.setCode(resultSet.getString("code"));
+        countryLanguageStatistics.setName(resultSet.getString("name"));
+        countryLanguageStatistics.setContinent(resultSet.getString("continent"));
+        countryLanguageStatistics.setRegion(resultSet.getString("region"));
+        countryLanguageStatistics.setSurfaceArea(resultSet.getFloat("surfacearea"));
+        countryLanguageStatistics.setIndepYear(resultSet.getInt("indepyear"));
+        countryLanguageStatistics.setPopulation(resultSet.getInt("population"));
+        countryLanguageStatistics.setLanguage(resultSet.getString("language"));
+        countryLanguageStatistics.setOficial(resultSet.getBoolean("isofficial"));
+        countryLanguageStatistics.setPercentage(resultSet.getInt("percentage"));
 
         return countryLanguageStatistics;
-
-
-
     }
-
-
 }

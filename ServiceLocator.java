@@ -1,53 +1,64 @@
 package alexa.com.worldservice;
 
-import alexa.com.worldservice.dao.CityDao;
 import alexa.com.worldservice.dao.CountryDao;
-import alexa.com.worldservice.dao.jdbc.JDBCCityDao;
 import alexa.com.worldservice.dao.jdbc.JdbcCountryDao;
-import alexa.com.worldservice.service.CityService;
 import alexa.com.worldservice.service.CountryService;
-import alexa.com.worldservice.service.DefaultCityService;
 import alexa.com.worldservice.service.DefaultCountryService;
 import org.postgresql.ds.PGPoolingDataSource;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class ServiceLocator {
     private static final Map<Class<?>, Object> LOCATOR = initDefaultDependencies();
 
     public static void register(Class<?> clazz, Object service) {
         LOCATOR.put(clazz, service);
-
     }
 
-    public static Map<Class<?>, Object> initDefaultDependencies() {
+    private static Map<Class<?>, Object> initDefaultDependencies() {
         Map<Class<?>, Object> map = new HashMap<>();
 
-        //config DAO
-        PGPoolingDataSource source = new PGPoolingDataSource();
-        source.setServerName("localhost");
-        source.setDatabaseName("world");
-        source.setUser("postgres");
-        source.setPassword("postgres");
-        //source.setSsl(true);
-        //source.setSslfactory("org.postgresql.ssl.NonValidatingFactory");
-        source.setPortNumber(5432);
-        source.setMaxConnections(10);
+        PGPoolingDataSource source = getPgPoolingDataSource();
 
-        CityDao cityDao = new JDBCCityDao(source);
         CountryDao countryDao = new JdbcCountryDao(source);
 
         //config services
         CountryService countryService = new DefaultCountryService(countryDao);
-        map.put(CountryService.class,countryService);
-
-        CityService cityService = new DefaultCityService(cityDao);
-        map.put(CityService.class,cityService);
+        map.put(CountryService.class, countryService);
 
         return map;
     }
-    public static <T> T get(Class<?> clazz){
+
+    private static PGPoolingDataSource getPgPoolingDataSource() {
+        InputStream resourceAsStream = ServiceLocator.class
+                .getClassLoader().getResourceAsStream("application.properties");
+
+        Properties appProps = new Properties();
+        PGPoolingDataSource source = new PGPoolingDataSource();
+
+        try {
+            appProps.load(resourceAsStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load application configuration");
+        }
+
+        source.setServerName(appProps.getProperty("serviceName"));
+        source.setDatabaseName(appProps.getProperty("databaseName"));
+        source.setUser(appProps.getProperty("user"));
+        source.setPassword(appProps.getProperty("password"));
+        source.setSsl(Boolean.parseBoolean(appProps.getProperty("ssl")));
+        source.setSslfactory(appProps.getProperty("sslFactory"));
+        source.setPortNumber(Integer.parseInt(appProps.getProperty("portNumber")));
+        source.setMaxConnections(Integer.parseInt(appProps.getProperty("maxConnections")));
+
+        return source;
+    }
+
+    public static <T> T get(Class<T> clazz) {
         return (T) clazz.cast(LOCATOR.get(clazz));
     }
 }
