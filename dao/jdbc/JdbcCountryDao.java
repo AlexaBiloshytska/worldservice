@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JdbcCountryDao implements CountryDao {
     private DataSource dataSource;
@@ -33,22 +31,18 @@ public class JdbcCountryDao implements CountryDao {
         this.dataSource = dataSource;
     }
 
-    public List<CountryLanguageStatistics> getStatistics(String name) {
-        List<CountryLanguageStatistics> countryLanguageStatistics = new ArrayList<>();
+    public CountryLanguageStatistics getStatistics(String name) {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
 
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                CountryLanguageStatistics category = COUNTRY_LANGUAGE_STATISTICS_MAPPER.mapRow(resultSet);
-                countryLanguageStatistics.add(category);
-            }
+            resultSet.next();
+            return COUNTRY_LANGUAGE_STATISTICS_MAPPER.mapRow(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_LANGUAGE_STATISTICS, e);
         }
-        return countryLanguageStatistics;
     }
 
 }

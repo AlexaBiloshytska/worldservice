@@ -24,12 +24,13 @@ public class CountryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
 
-        String name = request.getParameter("name");
-        List<CountryLanguageStatistics> countries = countryService.getStatistics(name);
-        logger.info("Getting country with country name {} ", name);
+        String countryName = request.getParameter("name");
+        logger.info("Getting country with country name {} ", countryName);
+
+        CountryLanguageStatistics getCountryByName = countryService.getStatistics(countryName);
 
         XmlMapper xmlMapper = new XmlMapper();
-        String xml = xmlMapper.writeValueAsString(countries);
+        String xml = xmlMapper.writeValueAsString(getCountryByName);
 
         response.getWriter().print(xml);
 
