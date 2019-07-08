@@ -6,9 +6,9 @@ import alexa.com.worldservice.mapper.CountryLanguageMapper;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,18 +26,21 @@ public class JdbcCountryDao implements CountryDao {
             "l.IsOfficial, " +
             "l.Percentage " +
             "from country as c " +
-            "inner join country_language as l ON c.code = l.countrycode";
+            "inner join country_language as l ON c.code = l.countrycode " +
+            "where c.name = ?";
 
     public JdbcCountryDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public List<CountryLanguageStatistics> getStatistics() {
+    public List<CountryLanguageStatistics> getStatistics(String name) {
         List<CountryLanguageStatistics> countryLanguageStatistics = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(GET_LANGUAGE_STATISTICS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
+
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 CountryLanguageStatistics category = COUNTRY_LANGUAGE_STATISTICS_MAPPER.mapRow(resultSet);
                 countryLanguageStatistics.add(category);

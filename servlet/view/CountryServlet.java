@@ -23,9 +23,10 @@ public class CountryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
-        logger.info("Start getting country language statistics");
 
-        List<CountryLanguageStatistics> countries = countryService.getStatistics();
+        String name = request.getParameter("name");
+        List<CountryLanguageStatistics> countries = countryService.getStatistics(name);
+        logger.info("Getting country with country name {} ", name);
 
         XmlMapper xmlMapper = new XmlMapper();
         String xml = xmlMapper.writeValueAsString(countries);

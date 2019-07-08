@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CountryService {
 
-    List<CountryLanguageStatistics> getStatistics();
+    List<CountryLanguageStatistics> getStatistics(String name);
 
 }

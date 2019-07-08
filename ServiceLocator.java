@@ -35,7 +35,7 @@ public class ServiceLocator {
 
     private static PGPoolingDataSource getPgPoolingDataSource() {
         InputStream resourceAsStream = ServiceLocator.class
-                .getClassLoader().getResourceAsStream("application.properties");
+                .getClassLoader().getResourceAsStream("application.production.properties");
 
         Properties appProps = new Properties();
         PGPoolingDataSource source = new PGPoolingDataSource();
