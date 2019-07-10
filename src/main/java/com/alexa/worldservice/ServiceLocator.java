@@ -9,6 +9,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -36,29 +38,20 @@ public class ServiceLocator {
     }
 
     private static HikariDataSource getHikariDataSource() {
-        InputStream resourceAsStream = ServiceLocator.class
-                .getClassLoader().getResourceAsStream("application.production.properties");
-
-        Properties appProps = new Properties();
-
-        try {
-            appProps.load(resourceAsStream);
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to load application configuration");
-        }
-
         HikariConfig config = new HikariConfig();
+        try {
+            URI databaseUrl =  new URI(System.getenv("DATABASE_URL"));
+            String username = databaseUrl.getUserInfo().split(":")[0];
+            String password = databaseUrl.getUserInfo().split(":")[1];
+            String dbUrl = "jdbc:postgresql://" + databaseUrl.getHost() + ':' + databaseUrl.getPort() + databaseUrl.getPath();
 
-        String databaseUrl = System.getenv("DATABASE_URL");
-        System.out.println(databaseUrl);
-
-        config.setJdbcUrl("jdbc:postgresql://ec2-54-247-170-5.eu-west-1.compute.amazonaws.com:5432/d2kaipcd4djo95");
-        config.setDriverClassName("org.postgresql.Driver");
-        config.setUsername("quschdkeukipgt");
-        config.setPassword("b2d6c23fc18f05db0abce58f14aa3895bcdc12cc5aa6e70c8ce9454e7d1afa47");
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.setJdbcUrl(dbUrl);
+            config.setDriverClassName("org.postgresql.Driver");
+            config.setUsername(username);
+            config.setPassword(password);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Unable to get database URL");
+        }
 
         return new HikariDataSource(config);
     }

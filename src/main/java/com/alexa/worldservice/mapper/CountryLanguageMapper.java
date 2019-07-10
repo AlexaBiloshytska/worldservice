@@ -9,7 +9,6 @@ public class CountryLanguageMapper {
         CountryLanguage countryLanguage = new CountryLanguage();
 
         countryLanguage.setLanguage(resultSet.getString("language"));
-        countryLanguage.setCountryCode(resultSet.getString("countrycode"));
         countryLanguage.setOficial(resultSet.getBoolean("isofficial"));
         countryLanguage.setPercentage(resultSet.getFloat("percentage"));
 
