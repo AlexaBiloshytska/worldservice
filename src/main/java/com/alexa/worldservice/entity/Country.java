@@ -2,9 +2,11 @@ package com.alexa.worldservice.entity;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-public class CountryLanguageStatistics {
+public class Country {
     private String code;
     private String name;
     private String continent;
@@ -12,7 +14,5 @@ public class CountryLanguageStatistics {
     private double surfaceArea;
     private int indepYear;
     private int population;
-    private String language;
-    private boolean isOficial;
-    private int percentage;
+    private List<CountryLanguage> countryLanguages;
 }

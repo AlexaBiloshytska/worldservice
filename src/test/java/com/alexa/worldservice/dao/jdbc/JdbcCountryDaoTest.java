@@ -1,13 +1,12 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.entity.Country;
 import com.alexa.worldservice.entity.CountryLanguageStatistics;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class JdbcCountryDaoTest {
     private static HikariConfig config = new HikariConfig();
@@ -29,17 +28,18 @@ public class JdbcCountryDaoTest {
     public void getStatistics() {
         // Prepare
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-        String countryName = "Aruba";
+        String countryName = "Angola";
 
         // Execute
-        CountryLanguageStatistics languageStatistics = jdbcCountryDao.getStatistics(countryName);
+        Country country = jdbcCountryDao.getCountry(countryName);
 
-        Assert.assertEquals("ABW", languageStatistics.getCode());
-        Assert.assertEquals("Aruba", languageStatistics.getName());
-        Assert.assertEquals("North America", languageStatistics.getContinent());
-        Assert.assertEquals("Caribbean", languageStatistics.getRegion());
-        Assert.assertEquals("French", languageStatistics.getLanguage());
-        Assert.assertEquals(193, languageStatistics.getSurfaceArea(), 0.01);
-        
+        Assert.assertEquals("AGO", country.getCode());
+        Assert.assertEquals("Angola", country.getName());
+        Assert.assertEquals("Africa", country.getContinent());
+        Assert.assertEquals("Central Africa", country.getRegion());
+        Assert.assertEquals(1246700.0, country.getSurfaceArea(), 0.01);
+        Assert.assertEquals(12878000,country.getPopulation());
+        Assert.assertNotEquals(0, country.getCountryLanguages().size());
+
     }
 }

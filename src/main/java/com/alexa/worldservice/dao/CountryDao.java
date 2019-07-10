@@ -1,7 +1,7 @@
 package com.alexa.worldservice.dao;
 
-import com.alexa.worldservice.entity.CountryLanguageStatistics;
+import com.alexa.worldservice.entity.Country;
 
 public interface CountryDao {
-    CountryLanguageStatistics getStatistics(String name);
+    Country getCountry(String name);
 }

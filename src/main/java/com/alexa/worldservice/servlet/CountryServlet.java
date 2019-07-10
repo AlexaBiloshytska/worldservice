@@ -1,7 +1,7 @@
 package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
-import com.alexa.worldservice.entity.CountryLanguageStatistics;
+import com.alexa.worldservice.entity.Country;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
@@ -27,14 +27,13 @@ public class CountryServlet extends HttpServlet {
 
         String countryName = request.getParameter("name");
 
-
         logger.info("Getting country with country name {} ", countryName);
 
-        CountryLanguageStatistics getCountryByName = countryService.getStatistics(countryName);
+        Country country = countryService.getCountry(countryName);
 
         String contentType = request.getContentType();
         if (contentType == null || contentType.equals("text/xml")) {
-            String xml = xmlMapper.writeValueAsString(getCountryByName);
+            String xml = xmlMapper.writeValueAsString(country);
             response.getWriter().print(xml);
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);

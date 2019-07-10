@@ -1,7 +1,7 @@
 package com.alexa.worldservice.service;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.alexa.worldservice.entity.CountryLanguageStatistics;
+import com.alexa.worldservice.entity.Country;
 
 public class DefaultCountryService implements CountryService {
     private CountryDao countryDao;
@@ -11,8 +11,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public CountryLanguageStatistics getStatistics(String name) {
-        return countryDao.getStatistics(name);
+    public Country getCountry(String name) {
+        return countryDao.getCountry(name);
     }
 
 }
