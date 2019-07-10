@@ -1,7 +1,7 @@
-package alexa.com.worldservice.service;
+package com.alexa.worldservice.service;
 
-import alexa.com.worldservice.dao.CountryDao;
-import alexa.com.worldservice.entity.CountryLanguageStatistics;
+import com.alexa.worldservice.dao.CountryDao;
+import com.alexa.worldservice.entity.CountryLanguageStatistics;
 
 public class DefaultCountryService implements CountryService {
     private CountryDao countryDao;

@@ -1,7 +1,6 @@
-package alexa.com.worldservice.mapper;
+package com.alexa.worldservice.mapper;
 
-import alexa.com.worldservice.entity.CountryLanguageStatistics;
-
+import com.alexa.worldservice.entity.CountryLanguageStatistics;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

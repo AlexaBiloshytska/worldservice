@@ -1,27 +1,28 @@
-package alexa.com.worldservice.dao.jdbc;
+package com.alexa.worldservice.dao.jdbc;
 
-import alexa.com.worldservice.entity.CountryLanguageStatistics;
-import org.apache.commons.dbcp.BasicDataSource;
+import com.alexa.worldservice.entity.CountryLanguageStatistics;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
 public class JdbcCountryDaoTest {
-    private BasicDataSource dataSource;
+    private static HikariConfig config = new HikariConfig();
+    private static HikariDataSource dataSource;
 
     @Before
     public void setup() {
-        dataSource = new BasicDataSource();
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
-        dataSource.setUrl("jdbc:h2:mem:test;INIT=runscript from 'classpath:init.sql'");
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setMinIdle(5);
-        dataSource.setMaxActive(10);
-        dataSource.setMaxIdle(20);
-        dataSource.setMaxOpenPreparedStatements(180);
+        config.setUsername("sa");
+        config.setPassword("");
+        config.setJdbcUrl("jdbc:h2:mem:test;INIT=runscript from 'classpath:init.sql'");
+        config.setDriverClassName("org.h2.Driver");
+        config.addDataSourceProperty( "cachePrepStmts" , "true" );
+        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        dataSource = new HikariDataSource(config);
     }
 
     @Test
@@ -39,6 +40,6 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Caribbean", languageStatistics.getRegion());
         Assert.assertEquals("French", languageStatistics.getLanguage());
         Assert.assertEquals(193, languageStatistics.getSurfaceArea(), 0.01);
-
+        
     }
 }
