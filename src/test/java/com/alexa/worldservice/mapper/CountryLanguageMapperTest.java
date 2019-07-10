@@ -17,22 +17,31 @@ public class CountryLanguageMapperTest {
         CountryLanguageMapper countryLanguageMapper = new CountryLanguageMapper();
 
         ResultSet mockResultSet = mock(ResultSet.class);
-        when(mockResultSet.getString("code")).thenReturn("AWS");
-        when(mockResultSet.getString("name")).thenReturn("Aruba");
-        when(mockResultSet.getString("continent")).thenReturn("North America");
-        when(mockResultSet.getString("region")).thenReturn("Caribbean");
-        when(mockResultSet.getString("language")).thenReturn("French");
-        when(mockResultSet.getDouble("surfaceArea")).thenReturn(193.0);
+        when(mockResultSet.getString("code")).thenReturn("AFG");
+        when(mockResultSet.getString("name")).thenReturn("Afghanistan");
+        when(mockResultSet.getString("continent")).thenReturn("Asia");
+        when(mockResultSet.getString("region")).thenReturn("Southern and Central Asia");
+        when(mockResultSet.getDouble("surfaceArea")).thenReturn(652090.0);
+        when(mockResultSet.getInt("indepYear")).thenReturn(1919);
+        when(mockResultSet.getInt("population")).thenReturn(22720000);
+        when(mockResultSet.getString("language")).thenReturn("Balochi");
+        when(mockResultSet.getBoolean("isOfficial")).thenReturn(false);
+        when(mockResultSet.getDouble("percentage")).thenReturn(0.9);
+
 
         CountryLanguageStatistics countryLanguageStatistics = countryLanguageMapper.mapRow(mockResultSet);
 
         assertNotNull(countryLanguageStatistics);
 
-        assertEquals("AWS", countryLanguageStatistics.getCode());
-        assertEquals("Aruba", countryLanguageStatistics.getName());
-        assertEquals("North America", countryLanguageStatistics.getContinent());
-        assertEquals("Caribbean", countryLanguageStatistics.getRegion());
-        assertEquals("French", countryLanguageStatistics.getLanguage());
-        assertEquals(193.0, countryLanguageStatistics.getSurfaceArea(),193.00);
+        assertEquals("AFG", countryLanguageStatistics.getCode());
+        assertEquals("Afghanistan", countryLanguageStatistics.getName());
+        assertEquals("Asia", countryLanguageStatistics.getContinent());
+        assertEquals("Southern and Central Asia", countryLanguageStatistics.getRegion());
+        assertEquals(652090.0, countryLanguageStatistics.getSurfaceArea(),652090.00);
+        assertEquals(22720000,countryLanguageStatistics.getPopulation());
+        assertEquals("Balochi", countryLanguageStatistics.getLanguage());
+        assertEquals(0.9, countryLanguageStatistics.getPercentage(),0.9);
+        assertEquals(false,countryLanguageStatistics.isOficial());
+
     }
 }
