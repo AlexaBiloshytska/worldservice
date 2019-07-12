@@ -1,7 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.Country;
-import com.alexa.worldservice.entity.CountryLanguageStatistics;
+import com.shelberg.entity.Country;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
@@ -29,6 +28,7 @@ public class JdbcCountryDaoTest {
         // Prepare
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
         String countryName = "Angola";
+        String language = "French";
 
         // Execute
         Country country = jdbcCountryDao.getCountry(countryName);
@@ -39,7 +39,7 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Central Africa", country.getRegion());
         Assert.assertEquals(1246700.0, country.getSurfaceArea(), 0.01);
         Assert.assertEquals(12878000,country.getPopulation());
-        Assert.assertNotEquals(0, country.getCountryLanguages().size());
+        Assert.assertNotEquals(0, country.getLanguageList().size());
 
     }
 }
