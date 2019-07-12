@@ -1,6 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
+import com.alexa.worldservice.exception.EmptyResultsetException;
 import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
 import com.shelberg.entity.Country;
@@ -8,6 +9,7 @@ import com.shelberg.entity.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,16 +51,18 @@ public class JdbcCountryDao implements CountryDao {
 
             try(ResultSet resultSet = preparedStatement.executeQuery()) {
                 if(!resultSet.next()){
-                    logger.info("resultSet is empty");
-                } else {
-                    resultSet.next();
+                    logger.error("resultSet is empty");
+                    throw new EmptyResultsetException("Non-empty resultSet expected");
                 }
+
                 Country country = COUNTRY_MAPPER.mapRow(resultSet);
+
                 List<Language> languages = new ArrayList<>();
                 languages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
                 while (resultSet.next()) {
                     languages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
                 }
+
                 country.setLanguageList(languages);
                 return country;
             }

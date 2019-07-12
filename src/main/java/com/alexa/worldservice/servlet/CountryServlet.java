@@ -1,6 +1,7 @@
 package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
+import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
@@ -25,13 +26,11 @@ public class CountryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
         String countryName = request.getParameter("name");
-        Enumeration<String> accept = request.getHeaders("Accept");
-        String acceptFirst = accept.nextElement();
+        String acceptType = request.getHeaders("Accept").nextElement();
 
         logger.info("Getting country with country name {} ", countryName);
 
-        String contentType = request.getContentType();
-        if (contentType == null || contentType.equals(acceptFirst)) {
+        if (MimeType.APPLICATION_XML.getValue().equals(acceptType)) {
             Country country = countryService.getCountry(countryName);
             String xml = xmlMapper.writeValueAsString(country);
             response.getWriter().print(xml);
@@ -41,5 +40,5 @@ public class CountryServlet extends HttpServlet {
 
         logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
     }
-
 }
+
