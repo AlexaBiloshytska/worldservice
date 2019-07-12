@@ -31,6 +31,12 @@ public class JdbcCountryDao implements CountryDao {
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
+    private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
+            "c.continent,c.region,c.surfacearea," +
+            "c.indepyear,c.population,c.lifeexpectancy,c.governmentform," +
+            "c.headofstate,t.name as capital  from country as c " +
+            "left join city as t on t.id = c.capital " +
+            "join country_language as lang on lang.countrycode = c.code where lang.language = ?";
 
     private DataSource dataSource;
 
@@ -61,6 +67,30 @@ public class JdbcCountryDao implements CountryDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_LANGUAGE_STATISTICS, e);
+        }
+    }
+
+    @Override
+    public List<Country> getCountriesByLanguage(String language) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE);) {
+
+            preparedStatement.setString(1, language);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            CountryLanguage countryLanguage =COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet);
+            Country country = COUNTRY_MAPPER.mapRow(resultSet);
+            resultSet.next();
+
+            List<Country> countries = new ArrayList<>();
+            while (resultSet.next()) {
+                countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+            }
+            country.setCountries(countries);
+            return (List<Country>) country;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
         }
     }
 

@@ -15,4 +15,5 @@ public class Country {
     private int indepYear;
     private int population;
     private List<CountryLanguage> countryLanguages;
+    List<Country> countries;
 }
