@@ -1,17 +1,18 @@
 package com.alexa.worldservice.mapper;
 
-import com.alexa.worldservice.entity.CountryLanguage;
+import com.shelberg.entity.Language;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CountryLanguageMapper {
-    public CountryLanguage mapRow(ResultSet resultSet) throws SQLException {
-        CountryLanguage countryLanguage = new CountryLanguage();
+    public Language mapRow(ResultSet resultSet) throws SQLException {
+        Language language = new Language();
 
-        countryLanguage.setLanguage(resultSet.getString("language"));
-        countryLanguage.setOficial(resultSet.getBoolean("isofficial"));
-        countryLanguage.setPercentage(resultSet.getFloat("percentage"));
+        language.setName(resultSet.getString("language"));
+        language.setOfficial(resultSet.getBoolean("isofficial"));
+        language.setPercentage(resultSet.getFloat("percentage"));
 
-        return countryLanguage;
+        return language;
     }
 }

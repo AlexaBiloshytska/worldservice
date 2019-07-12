@@ -1,11 +1,10 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.alexa.worldservice.entity.Country;
-import com.alexa.worldservice.entity.CountryLanguage;
-import com.alexa.worldservice.entity.CountryLanguageStatistics;
 import com.alexa.worldservice.mapper.CountryLanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
+import com.shelberg.entity.Country;
+import com.shelberg.entity.Language;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -56,13 +55,13 @@ public class JdbcCountryDao implements CountryDao {
 
             Country country = COUNTRY_MAPPER.mapRow(resultSet);
 
-            List<CountryLanguage> countryLanguages = new ArrayList<>();
-            countryLanguages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
+            List<Language> languages = new ArrayList<>();
+            languages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
             while (resultSet.next()){
-                countryLanguages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
+                languages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
             }
 
-            country.setCountryLanguages(countryLanguages);
+            country.setLanguageList(languages);
             return country;
 
         } catch (SQLException e) {
@@ -78,16 +77,14 @@ public class JdbcCountryDao implements CountryDao {
             preparedStatement.setString(1, language);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            CountryLanguage countryLanguage =COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet);
-            Country country = COUNTRY_MAPPER.mapRow(resultSet);
             resultSet.next();
 
             List<Country> countries = new ArrayList<>();
             while (resultSet.next()) {
                 countries.add(COUNTRY_MAPPER.mapRow(resultSet));
             }
-            country.setCountries(countries);
-            return (List<Country>) country;
+
+            return countries;
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);

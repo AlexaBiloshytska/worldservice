@@ -1,7 +1,6 @@
 package com.alexa.worldservice.mapper;
 
-import com.alexa.worldservice.entity.Country;
-import com.alexa.worldservice.entity.CountryLanguageStatistics;
+import com.shelberg.entity.Country;
 import org.junit.Test;
 
 import java.sql.ResultSet;

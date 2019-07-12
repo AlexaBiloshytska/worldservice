@@ -60,6 +60,17 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>entity-mvn-repo</id>
+            <url>https://raw.github.com/littlepony99/entity/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- postgresql -->
         <dependency>
@@ -67,7 +78,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.6</version>
         </dependency>
-
 
         <!--Logs-->
         <dependency>
@@ -128,6 +138,10 @@
             <scope>provided</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.shelberg</groupId>
+            <artifactId>com.shelberg.entity</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

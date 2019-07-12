@@ -1,7 +1,7 @@
 package com.alexa.worldservice.dao;
 
-import com.alexa.worldservice.entity.Country;
 
+import com.shelberg.entity.Country;
 import java.util.List;
 
 public interface CountryDao {

@@ -1,7 +1,7 @@
 package com.alexa.worldservice.service;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.alexa.worldservice.entity.Country;
+import com.shelberg.entity.Country;
 
 public class DefaultCountryService implements CountryService {
     private CountryDao countryDao;

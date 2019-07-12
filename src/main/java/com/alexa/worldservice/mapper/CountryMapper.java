@@ -1,6 +1,7 @@
 package com.alexa.worldservice.mapper;
 
-import com.alexa.worldservice.entity.Country;
+
+import com.shelberg.entity.Country;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,10 @@ public class CountryMapper {
         country.setSurfaceArea(resultSet.getDouble("surfacearea"));
         country.setIndepYear(resultSet.getInt("indepyear"));
         country.setPopulation(resultSet.getInt("population"));
+        country.setLifeExpectancy(resultSet.getDouble("lifeexpectancy"));
+        country.setGovernmentForm(resultSet.getString("governmentform"));
+        country.setGovernmentForm(resultSet.getString("headofstate"));
+        country.setGovernmentForm(resultSet.getString("capital"));
 
         return country;
     }

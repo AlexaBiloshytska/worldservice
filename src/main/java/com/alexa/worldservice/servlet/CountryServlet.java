@@ -1,9 +1,9 @@
 package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
-import com.alexa.worldservice.entity.Country;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.shelberg.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
