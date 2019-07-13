@@ -1,19 +1,17 @@
 package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
-import com.alexa.worldservice.constant.MimeType;
+import com.alexa.worldservice.exception.EmptyResultsetException;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 
 @WebServlet(urlPatterns = "/api/v1/countries")
@@ -30,14 +28,18 @@ public class CountryServlet extends HttpServlet {
 
         logger.info("Getting country with country name {} ", countryName);
 
-        if (MimeType.APPLICATION_XML.getValue().equals(acceptType)) {
-            Country country = countryService.getCountry(countryName);
-            String xml = xmlMapper.writeValueAsString(country);
-            response.getWriter().print(xml);
+        if (acceptType.contains("application/xml")) {
+            try {
+                Country country = countryService.getCountry(countryName);
+                String xml = xmlMapper.writeValueAsString(country);
+                response.getWriter().print(xml);
+            } catch (EmptyResultsetException e) {
+                logger.error("The country with name: {} is not found", countryName);
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
-
         logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
     }
 }
