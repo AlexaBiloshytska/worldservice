@@ -8,6 +8,7 @@ import com.shelberg.entity.Views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.activation.MimeType;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,18 @@ public class CountriesByLanguageServlet extends HttpServlet {
 
         logger.info("Getting country with language {} ", language);
 
-        List<Country> countries = countryService.getCountriesByLanguage(language);
+
+        if (MimeType.APPLICATION_XML.getValue().equals(acceptType)) {
+            List<Country> countries = countryService.getCountriesByLanguage(language);
+
+            String xml = xmlMapper.writeValueAsString(countries);
+            response.getWriter().print(xml);
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
+    }
     }
 
 
