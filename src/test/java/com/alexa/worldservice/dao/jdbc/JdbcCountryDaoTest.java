@@ -43,14 +43,4 @@ public class JdbcCountryDaoTest {
         Assert.assertNotEquals(0, country.getLanguageList().size());
 
     }
-
-    @Test
-    public void getCountriesByLanguage() {
-        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-        String language = "Ukrainian";
-
-        List<Country> country = jdbcCountryDao.getCountriesByLanguage(language);
-
-        Assert.assertNotNull(country);
-    }
 }

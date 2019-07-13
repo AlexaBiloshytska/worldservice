@@ -1,8 +1,8 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.alexa.worldservice.mapper.CountryLanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
+import com.alexa.worldservice.mapper.LanguageMapper;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Language;
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class JdbcCountryDao implements CountryDao {
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
-    private static final CountryLanguageMapper COUNTRY_LANGUAGE_MAPPER = new CountryLanguageMapper();
+    private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
     private static final String GET_LANGUAGE_STATISTICS = "select c.code," +
             "c.name, " +
             "c.continent, " +
@@ -30,6 +30,7 @@ public class JdbcCountryDao implements CountryDao {
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
+
     private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
             "c.continent,c.region,c.surfacearea," +
             "c.indepyear,c.population,c.lifeexpectancy,c.governmentform," +
@@ -92,4 +93,5 @@ public class JdbcCountryDao implements CountryDao {
     }
 
 }
+
 
