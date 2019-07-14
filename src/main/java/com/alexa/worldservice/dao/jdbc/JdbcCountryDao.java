@@ -35,8 +35,10 @@ public class JdbcCountryDao implements CountryDao {
             "c.continent,c.region,c.surfacearea," +
             "c.indepyear,c.population,c.lifeexpectancy,c.governmentform," +
             "c.headofstate,t.name as capital  from country as c " +
+            "join country_language as lang on lang.countrycode = c.code " +
             "left join city as t on t.id = c.capital " +
-            "join country_language as lang on lang.countrycode = c.code where lang.language = ?";
+            "where lang.language = ?";
+
 
     private DataSource dataSource;
 
@@ -78,8 +80,6 @@ public class JdbcCountryDao implements CountryDao {
             preparedStatement.setString(1, language);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
             List<Country> countries = new ArrayList<>();
             while (resultSet.next()) {
                 countries.add(COUNTRY_MAPPER.mapRow(resultSet));

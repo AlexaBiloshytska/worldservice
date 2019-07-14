@@ -1,21 +1,23 @@
 package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
-import com.alexa.worldservice.service.CountryService;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.exception.NoDataFoundException;
+import com.alexa.worldservice.service.CountryService;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
+import com.shelberg.entity.Views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.activation.MimeType;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+@JsonView(Views.CountryStatistic.class)
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
     private final XmlMapper xmlMapper = new XmlMapper();
@@ -30,13 +32,13 @@ public class CountryServlet extends HttpServlet {
 
         logger.info("Getting country with country name {} ", countryName);
 
-        if (acceptType.contains(MimeType.class.getName())) {
+        if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             try {
                 Country country = countryService.getCountry(countryName);
                 String xml = xmlMapper.writeValueAsString(country);
                 response.getWriter().print(xml);
             } catch (NoDataFoundException e) {
-                logger.error("The country with name: {} is not found", countryName);
+                logger.warn("The country with name: {} is not found", countryName);
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } else {
