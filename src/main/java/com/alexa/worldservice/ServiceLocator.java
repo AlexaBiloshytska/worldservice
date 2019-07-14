@@ -44,13 +44,19 @@ public class ServiceLocator {
 
     private static HikariDataSource getHikariDataSource() {
         String driverName;
+        String poolSize;
         String databaseUrl = System.getenv("DATABASE_URL");
+
         if (databaseUrl == null) { // use local props
             Properties appProps = loadLocalProperties();
+            logger.info("Getting properties from a local properties file");
             databaseUrl = appProps.getProperty("dbUrl");
             driverName = appProps.getProperty("driverName");
+            poolSize = appProps.getProperty("maxConnections");
         } else { // use Heroku env variable
+            logger.info("Getting properties from an environment variables");
             driverName = "org.postgresql.Driver";
+            poolSize = System.getenv("maxConnections");
         }
 
         try {
@@ -64,6 +70,10 @@ public class ServiceLocator {
             config.setDriverClassName(driverName);
             config.setUsername(username);
             config.setPassword(password);
+            config.setMaximumPoolSize(Integer.parseInt(poolSize));
+
+            logger.info("Datasource have been configured with following properties:{},{},{},{},{}",
+                    driverName, poolSize, dbUrl, username, password);
 
             return new HikariDataSource(config);
         } catch (URISyntaxException e) {
@@ -72,15 +82,13 @@ public class ServiceLocator {
     }
 
     private static Properties loadLocalProperties() {
-        InputStream resourceAsStream = ServiceLocator.class.getClassLoader().getResourceAsStream(localPropFileName);
-        try {
+        try (InputStream resourceAsStream = ServiceLocator.class.getClassLoader().getResourceAsStream(localPropFileName)) {
             Properties appProps = new Properties();
             appProps.load(resourceAsStream);
             return appProps;
         } catch (IOException e) {
-            throw new RuntimeException("Unable to load application configuration");
+            throw new RuntimeException("Unable to load application configuration", e);
         }
-
     }
 }
 

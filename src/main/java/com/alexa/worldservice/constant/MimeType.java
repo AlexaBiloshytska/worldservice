@@ -4,7 +4,7 @@ public enum MimeType {
     APPLICATION_XML("application/xml"),
     APPLICATION_JSON("application/json");
 
-    String value;
+    private String value;
 
     MimeType(String value) {
         this.value = value;
