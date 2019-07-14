@@ -8,6 +8,7 @@ import com.shelberg.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.activation.MimeType;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class CountryServlet extends HttpServlet {
 
         logger.info("Getting country with country name {} ", countryName);
 
-        if (acceptType.contains("application/xml")) {
+        if (acceptType.contains(MimeType.class.getName())) {
             try {
                 Country country = countryService.getCountry(countryName);
                 String xml = xmlMapper.writeValueAsString(country);
@@ -43,5 +44,4 @@ public class CountryServlet extends HttpServlet {
         }
         logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
     }
-
 }
