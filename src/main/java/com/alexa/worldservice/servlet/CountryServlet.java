@@ -10,6 +10,7 @@ import com.shelberg.entity.Country;
 import com.shelberg.entity.Views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.shelberg.entity.Views.*;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@JsonView(Views.CountryStatistic.class)
+@JsonView(CountryStatistic.class)
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
     private final XmlMapper xmlMapper = new XmlMapper();
@@ -35,8 +36,10 @@ public class CountryServlet extends HttpServlet {
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             try {
                 Country country = countryService.getCountry(countryName);
-                String xml = xmlMapper.writeValueAsString(country);
-                response.getWriter().print(xml);
+                String xml = xmlMapper.writerWithView(CountryStatistic.class).writeValueAsString(country);
+                response.setContentType(MimeType.APPLICATION_XML.getValue());
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(xml);
             } catch (NoDataFoundException e) {
                 logger.warn("The country with name: {} is not found", countryName);
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
