@@ -22,7 +22,9 @@ import java.util.List;
 @WebServlet(urlPatterns = "/api/v1/language")
 public class CountriesByLanguageServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final ObjectMapper mapper = new ObjectMapper();
     private CountryService countryService = ServiceLocator.get(CountryService.class);
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,7 +35,6 @@ public class CountriesByLanguageServlet extends HttpServlet {
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<Country> countries = countryService.getCountriesByLanguage(language);
-            ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(countries);
             response.getWriter().print(json);
         } else {
