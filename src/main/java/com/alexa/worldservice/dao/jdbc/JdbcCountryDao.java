@@ -79,13 +79,14 @@ public class JdbcCountryDao implements CountryDao {
 
             preparedStatement.setString(1, language);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            List<Country> countries = new ArrayList<>();
-            while (resultSet.next()) {
-                countries.add(COUNTRY_MAPPER.mapRow(resultSet));
-            }
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<Country> countries = new ArrayList<>();
+                while (resultSet.next()) {
+                    countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+                }
 
-            return countries;
+                return countries;
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);

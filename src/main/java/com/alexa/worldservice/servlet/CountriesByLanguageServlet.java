@@ -5,6 +5,7 @@ import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Views;
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import java.util.List;
 @WebServlet(urlPatterns = "/api/v1/language")
 public class CountriesByLanguageServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override

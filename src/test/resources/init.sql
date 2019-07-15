@@ -42,7 +42,7 @@ INSERT INTO city (id, name, country_code, district, population) VALUES (1, 'Kabu
 INSERT INTO city (id, name, country_code, district, population) VALUES (2, 'Qandahar', 'AFG', 'Qandahar', 237500);
 INSERT INTO city (id, name, country_code, district, population) VALUES (3, 'Herat', 'AGO', 'Herat', 186800);
 INSERT INTO city (id, name, country_code, district, population) VALUES (4, 'Mazar-e-Sharif', 'AIA', 'Balkh', 127800);
-INSERT INTO city (id, name, country_code, district, population) VALUES (34, 'Amsterdam', 'ALB', 'Noord-Holland', 731200);
+INSERT INTO city (id, name, country_code, district, population) VALUES (34, 'Tirana', 'ALB', 'Noord-Holland', 731200);
 
 INSERT INTO country (code, name, continent, region, surfacearea, indepyear, population, lifeexpectancy, gnp, gnpold, localname, governmentform, headofstate, capital, code2) VALUES ('ABW', 'Aruba', 'North America', 'Caribbean', 193, null, 103000, 78.4, 828.00, 793.00, 'Aruba', 'Nonmetropolitan Territory of The Netherlands', 'Beatrix', 129, 'AW');
 INSERT INTO country (code, name, continent, region, surfacearea, indepyear, population, lifeexpectancy, gnp, gnpold, localname, governmentform, headofstate, capital, code2) VALUES ('AFG', 'Afghanistan', 'Asia', 'Southern and Central Asia', 652090, 1919, 22720000, 45.9, 5976.00, null, 'Afganistan/Afqanestan', 'Islamic Emirate', 'Mohammad Omar', 1, 'AF');

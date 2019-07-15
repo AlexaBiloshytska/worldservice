@@ -54,22 +54,19 @@ public class JdbcCountryDaoTest {
         List<Country> countries = jdbcCountryDao.getCountriesByLanguage(language);
 
         Assert.assertNotNull(countries);
+
         Assert.assertEquals(1,countries.size());
-        Country country = countries.get(0);
-        Assert.assertEquals("ALB",country.getCode());
-        Assert.assertEquals("Albania",country.getName());
-        Assert.assertEquals("Europe",country.getContinent());
-        Assert.assertEquals("Southern Europe", country.getRegion());
-        Assert.assertEquals(28748.0,country.getSurfaceArea(),0.00);
-        Assert.assertEquals(1912, country.getIndepYear());
-        Assert.assertEquals(3401200, country.getPopulation());
-        Assert.assertEquals(71.5999984741211,country.getLifeExpectancy(), 0.00);
-        Assert.assertEquals("Republic",country.getGovernmentForm());
-        Assert.assertEquals("Rexhep Mejdani", country.getHeadOfState());
-        Assert.assertEquals("Shqipria", country.getCapital());
-
-
-
+        Assert.assertEquals("ALB",countries.get(0).getCode());
+        Assert.assertEquals("Albania",countries.get(0).getName());
+        Assert.assertEquals("Europe",countries.get(0).getContinent());
+        Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
+        Assert.assertEquals(28748.0,countries.get(0).getSurfaceArea(),0.00);
+        Assert.assertEquals(1912, countries.get(0).getIndepYear());
+        Assert.assertEquals(3401200, countries.get(0).getPopulation());
+        Assert.assertEquals(71.5999984741211,countries.get(0).getLifeExpectancy(), 0.00);
+        Assert.assertEquals("Republic",countries.get(0).getGovernmentForm());
+        Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
+        Assert.assertEquals("Tirana", countries.get(0).getCapital());
 
     }
 }
