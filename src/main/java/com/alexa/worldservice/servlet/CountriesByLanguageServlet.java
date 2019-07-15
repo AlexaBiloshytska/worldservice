@@ -28,6 +28,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long startTime = System.currentTimeMillis();
         String language = request.getParameter("language");
 
         logger.info("Getting country with language {} ", language);
@@ -42,7 +43,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
 
-        logger.info("Finished getting countries by language  {} ", language);
+        logger.info("Finished getting countries by language  {} ", language, startTime - System.currentTimeMillis());
     }
 }
 

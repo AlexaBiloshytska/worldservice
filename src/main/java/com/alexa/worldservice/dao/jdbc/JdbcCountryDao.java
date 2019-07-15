@@ -86,6 +86,7 @@ public class JdbcCountryDao implements CountryDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE)) {
 
+            logger.info("Getting data from SQL query: ", GET_COUNTRIES_BY_LANGUAGE);
             preparedStatement.setString(1, language);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
