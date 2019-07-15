@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
-import com.shelberg.entity.Views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.shelberg.entity.Views.*;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@JsonView(Views.CountryData.class)
+@JsonView(CountryData.class)
 @WebServlet(urlPatterns = "/api/v1/language")
 public class CountriesByLanguageServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -35,7 +35,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<Country> countries = countryService.getCountriesByLanguage(language);
-            String json = mapper.writeValueAsString(countries);
+            String json = mapper.writerWithView(CountryData.class).writeValueAsString(countries);
             response.getWriter().print(json);
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
