@@ -30,7 +30,11 @@ public class JdbcCountryDao implements CountryDao {
             "c.population, " +
             "l.language, " +
             "l.isOfficial, " +
-            "l.percentage " +
+            "l.percentage, " +
+            "c.lifeexpectancy, " +
+            "c.governmentform, " +
+            "c.headofstate, " +
+            "c.capital " +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
