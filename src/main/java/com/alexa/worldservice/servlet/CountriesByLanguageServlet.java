@@ -36,6 +36,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<Country> countries = countryService.getCountriesByLanguage(language);
             String json = mapper.writerWithView(CountryData.class).writeValueAsString(countries);
+            response.setContentType(MimeType.APPLICATION_JSON.getValue());
             response.getWriter().print(json);
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
