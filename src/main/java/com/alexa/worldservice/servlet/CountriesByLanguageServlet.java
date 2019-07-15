@@ -42,7 +42,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
 
-        logger.info("Finished getting contries  by language  {} ", language);
+        logger.info("Finished getting countries by language  {} ", language);
     }
 }
 

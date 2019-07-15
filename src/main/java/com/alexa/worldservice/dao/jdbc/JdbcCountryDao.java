@@ -49,7 +49,7 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountry(String name) {
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
 
             preparedStatement.setString(1, name);
 
@@ -60,7 +60,7 @@ public class JdbcCountryDao implements CountryDao {
 
             List<Language> languages = new ArrayList<>();
             languages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 languages.add(COUNTRY_LANGUAGE_MAPPER.mapRow(resultSet));
             }
 
@@ -75,19 +75,17 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public List<Country> getCountriesByLanguage(String language) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE);) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE)) {
 
             preparedStatement.setString(1, language);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Country> countries = new ArrayList<>();
                 while (resultSet.next()) {
                     countries.add(COUNTRY_MAPPER.mapRow(resultSet));
                 }
-
                 return countries;
             }
-
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
         }
