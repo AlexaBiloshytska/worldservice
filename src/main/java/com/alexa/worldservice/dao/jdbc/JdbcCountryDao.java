@@ -39,7 +39,7 @@ public class JdbcCountryDao implements CountryDao {
             "left join city as t on t.id = c.capital " +
             "where lang.language = ?";
 
-
+    private static final String GET_COUNTRY_BY_NAME="";
     private DataSource dataSource;
 
     public JdbcCountryDao(DataSource dataSource) {
