@@ -93,6 +93,11 @@ public class JdbcCountryDao implements CountryDao {
         }
     }
 
+    @Override
+    public List<Country> searchByName(String name, int page) {
+        return null;
+    }
+
 }
 
 
