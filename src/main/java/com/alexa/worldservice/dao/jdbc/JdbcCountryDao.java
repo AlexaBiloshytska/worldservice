@@ -9,16 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcCountryDao implements CountryDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
+    private static final Integer LIMIT = 5;
     private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
     private static final String GET_LANGUAGE_STATISTICS = "select c.code," +
             "c.name, " +
@@ -42,17 +40,21 @@ public class JdbcCountryDao implements CountryDao {
             "left join city as t on t.id = c.capital " +
             "where lang.language = ?";
 
-    private static final String GET_COUNTRY_BY_NAME = "select c.code,\n" +
-            "c.name," +
+    private static final String GET_COUNTRY_BY_CRITERIA = "select c.code," +
+            "c.name, " +
             "c.continent, " +
             "c.region, " +
             "c.surfacearea, " +
             "c.indepyear, " +
-            "c.headofstate " +
-            "from country as c --left join city as t on (t.id = c.capital) " +
-            "where lower(c.name) like %?% ||lower(%?%)||%? " +
-            "AND c.continent = ? " +
-            "AND c.population >= 1000;";
+            "c.headofstate, " +
+            "c.population, " +
+            "c.lifeexpectancy, " +
+            "c.governmentform," +
+            "t.name as capital, " +
+            "c.code2 " +
+            "from country as c " +
+            "left join city as t on t.id = c.capital " +
+            "where 1=1";
 
     private DataSource dataSource;
 
@@ -108,35 +110,43 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public List<Country> searchByName(String name, String continent, Integer population) {
+    public List<Country> searchByCriteria(String name, String continent, Integer population, Integer page) {
+
+        String criteriaQuery = getCountryCriteriaQuery(name, continent, population, page);
+
+
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRY_BY_NAME)) {
-            if (name != null && !name.isEmpty()) {
-                String queryName = GET_COUNTRY_BY_NAME + "where lower(c.name) like? OR lower(?)OR?";
-            }
-            if (continent != null && !continent.isEmpty()) {
-                String queryContinent = GET_COUNTRY_BY_NAME + "AND c.continent =?";
-            }
-            if (population != null) {
-                String queryPopulation = GET_COUNTRY_BY_NAME + "AND c.population >= 1000";
-            }
+             Statement statement = connection.createStatement()) {
 
-            preparedStatement.setString(1, "name");
-            preparedStatement.setString(2, "continent");
-            preparedStatement.setInt(3, population);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-           List <Country >country = COUNTRY_MAPPER.mapRow(resultSet);
-
-            return country;
+            ResultSet resultSet = statement.executeQuery(criteriaQuery);
+            List<Country> countries = new ArrayList<>();
+            while (resultSet.next()) {
+                countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+            }
+            return countries;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRY_BY_NAME, e);
+            throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRY_BY_CRITERIA, e);
         }
     }
 
-
+    String getCountryCriteriaQuery(String name, String continent, Integer population, Integer page) {
+        String defaultQuery = GET_COUNTRY_BY_CRITERIA;
+        if (name != null && !name.isEmpty()) {
+            defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
+        }
+        if (continent != null && !continent.isEmpty()) {
+            defaultQuery = defaultQuery + " AND lower(c.continent) = '" + continent.toLowerCase() + "'";
+        }
+        if (population != null && population > 0) {
+            defaultQuery = defaultQuery + " AND c.population >= " + population + "";
+        }
+        if (page != null && page > 0) {
+            int offset = (page - 1) * LIMIT;
+            defaultQuery = defaultQuery + " LIMIT " + LIMIT + " OFFSET " + offset;
+        }
+        return defaultQuery;
+    }
 }
 
 
