@@ -29,7 +29,5 @@ public class LanguageMapperTest {
         Assert.assertEquals("French",language.getName());
         Assert.assertEquals(0.03,language.getPercentage(),0.00);
         Assert.assertEquals(false, language.isOfficial());
-
-
     }
 }

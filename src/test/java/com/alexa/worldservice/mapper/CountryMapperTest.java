@@ -38,6 +38,5 @@ public class CountryMapperTest {
         assertEquals("Eastern Europe", country.getRegion());
         assertEquals(603700.0, country.getSurfaceArea(),0.00);
         assertEquals(50456000,country.getPopulation());
-
     }
 }

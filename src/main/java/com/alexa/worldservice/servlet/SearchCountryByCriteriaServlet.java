@@ -2,6 +2,7 @@ package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
+import com.alexa.worldservice.dao.jdbc.JdbcCountryDao;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -20,8 +21,9 @@ import java.util.List;
 @WebServlet(urlPatterns = "/api/v1/search")
 public class SearchCountryByCriteriaServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private CountryService countryService = ServiceLocator.get(CountryService.class);
-    private final XmlMapper xmlMapper = new XmlMapper();
+    private final Integer LIMIT = 5;
+    private final XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
+    private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,12 +36,15 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
         String pageParam = request.getParameter("page");
         Integer page = pageParam != null ? Integer.valueOf(pageParam) : 1;
 
+        String limitParam = request.getParameter("limit");
+        Integer limit = limitParam!=null ? Integer.valueOf(limitParam): LIMIT;
+
         String acceptType = request.getHeaders("Accept").nextElement();
 
-        logger.info("Getting country with parameters: {},{},{},{}", name, continent, population, page);
+        logger.info("Getting country with parameters: {},{},{},{},{}", name, continent, population,limit, page);
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
-            List<Country> country = countryService.getCountriesByCriteria(name, continent, population, page);
+            List<Country> country = countryService.getCountriesByCriteria(name, continent, population, limit, page);
             String xml = xmlMapper.writerWithView(Views.CountryData.class).writeValueAsString(country);
             response.setContentType(MimeType.APPLICATION_XML.getValue());
             response.setStatus(HttpServletResponse.SC_OK);
