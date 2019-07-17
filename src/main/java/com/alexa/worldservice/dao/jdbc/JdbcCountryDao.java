@@ -30,10 +30,21 @@ public class JdbcCountryDao implements CountryDao {
             "c.population, " +
             "l.language, " +
             "l.isOfficial, " +
-            "l.percentage " +
+            "l.percentage, " +
+            "c.lifeexpectancy, " +
+            "c.governmentform, " +
+            "c.headofstate, " +
+            "c.capital " +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
+    private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
+            "c.continent,c.region,c.surfacearea," +
+            "c.indepyear,c.population,c.lifeexpectancy,c.governmentform," +
+            "c.headofstate,t.name as capital  from country as c " +
+            "join country_language as lang on lang.countrycode = c.code " +
+            "left join city as t on t.id = c.capital " +
+            "where lang.language = ?";
 
     private DataSource dataSource;
 
@@ -44,7 +55,7 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountry(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
-            logger.info("Getting data from SQL query: ", GET_LANGUAGE_STATISTICS);
+            logger.info("Getting data from SQL query: {} ", GET_LANGUAGE_STATISTICS);
 
             preparedStatement.setString(1, name);
 
@@ -69,5 +80,27 @@ public class JdbcCountryDao implements CountryDao {
             throw new RuntimeException("Unable to execute sql query: " + GET_LANGUAGE_STATISTICS, e);
         }
     }
+
+    @Override
+    public List<Country> getCountriesByLanguage(String language) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE)) {
+
+            logger.info("Getting data from SQL query: {}", GET_COUNTRIES_BY_LANGUAGE);
+            preparedStatement.setString(1, language);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<Country> countries = new ArrayList<>();
+                while (resultSet.next()) {
+                    countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+                }
+                return countries;
+            }
+        } catch (SQLException e) {
+            logger.error("Unable to execute sql query: {}", GET_COUNTRIES_BY_LANGUAGE, e);
+            throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
+        }
+    }
 }
+
 

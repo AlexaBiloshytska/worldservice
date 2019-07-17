@@ -7,7 +7,6 @@ import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
-import com.shelberg.entity.Views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.shelberg.entity.Views.*;
@@ -18,11 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@JsonView(CountryStatistic.class)
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
-    private final XmlMapper xmlMapper = new XmlMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override

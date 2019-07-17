@@ -2,6 +2,9 @@ package com.alexa.worldservice.service;
 
 import com.alexa.worldservice.dao.CountryDao;
 import com.shelberg.entity.Country;
+import com.shelberg.entity.Country;
+
+import java.util.List;
 
 public class DefaultCountryService implements CountryService {
     private CountryDao countryDao;
@@ -13,6 +16,10 @@ public class DefaultCountryService implements CountryService {
     @Override
     public Country getCountry(String name) {
         return countryDao.getCountry(name);
+    }
+
+    @Override
+    public List<Country> getCountriesByLanguage(String language) { return countryDao.getCountriesByLanguage(language);
     }
 
 }

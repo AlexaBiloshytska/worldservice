@@ -79,7 +79,6 @@
             <version>42.2.6</version>
         </dependency>
 
-
         <!--Logs-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
