@@ -17,7 +17,6 @@ import java.util.List;
 public class JdbcCountryDao implements CountryDao {
     private static final Logger logger = LoggerFactory.getLogger(JdbcCountryDao.class);
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
-    private static final Integer LIMIT = 5;
     private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
     private static final String GET_LANGUAGE_STATISTICS = "select c.code," +
             "c.name, " +
@@ -117,8 +116,12 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public List<Country> searchByCriteria(String name, String continent, Integer population, Integer page) {
-        String criteriaQuery = getCountryCriteriaQuery(name, continent, population, page);
+    public List<Country> searchByCriteria(String name,
+                                          String continent,
+                                          Integer population,
+                                          Integer page,
+                                          Integer limit) {
+        String criteriaQuery = getCountryCriteriaQuery(name, continent, population, page, limit);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -135,7 +138,7 @@ public class JdbcCountryDao implements CountryDao {
         }
     }
 
-    String getCountryCriteriaQuery(String name, String continent, Integer population, Integer page) {
+    String getCountryCriteriaQuery(String name, String continent, Integer population, Integer page, Integer limit) {
         String defaultQuery = GET_COUNTRY_BY_CRITERIA;
         if (name != null && !name.isEmpty()) {
             defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
@@ -147,8 +150,8 @@ public class JdbcCountryDao implements CountryDao {
             defaultQuery = defaultQuery + " AND c.population >= " + population + "";
         }
         if (page != null && page > 0) {
-            int offset = (page - 1) * LIMIT;
-            defaultQuery = defaultQuery + " LIMIT " + LIMIT + " OFFSET " + offset;
+            int offset = (page - 1) * limit;
+            defaultQuery = defaultQuery + " LIMIT " + limit + " OFFSET " + offset;
         }
         return defaultQuery;
     }

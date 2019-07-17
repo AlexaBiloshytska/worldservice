@@ -4,7 +4,6 @@ import com.shelberg.entity.Country;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -76,8 +75,9 @@ public class JdbcCountryDaoIT {
         String name = "ang";
         String continent= "Europe";
         Integer population =100;
-        Integer page = 2;
-        List<Country> countries = jdbcCountryDao.searchByCriteria(name,continent,population,page);
+        Integer page = 1;
+        Integer limit = 2;
+        List<Country> countries = jdbcCountryDao.searchByCriteria(name,continent,population,page, limit);
 
         Assert.assertNotNull(countries);
         Assert.assertEquals(2,countries.size());

@@ -21,7 +21,7 @@ import java.util.List;
 @WebServlet(urlPatterns = "/api/v1/search")
 public class SearchCountryByCriteriaServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Integer LIMIT = 5;
+    private static final Integer LIMIT = 5;
     private final XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
     private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
