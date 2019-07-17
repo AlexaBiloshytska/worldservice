@@ -22,7 +22,7 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public List<Country> getCountriesByCriteria(String name, String continent, Integer population, Integer page) {
+    public List<Country> getCountriesByCriteria(String name, String continent, Integer population, Integer page, Integer limit) {
         return countryDao.searchByCriteria(name,continent,population,page);
     }
 
