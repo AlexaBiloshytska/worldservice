@@ -2,9 +2,7 @@ package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
-import com.alexa.worldservice.dao.jdbc.JdbcCountryDao;
 import com.alexa.worldservice.service.CountryService;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Views;
@@ -18,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/api/v1/search")
+@WebServlet(urlPatterns = "/api/v1/search/country")
 public class SearchCountryByCriteriaServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final Integer LIMIT = 5;
@@ -37,11 +35,11 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
         Integer page = pageParam != null ? Integer.valueOf(pageParam) : 1;
 
         String limitParam = request.getParameter("limit");
-        Integer limit = limitParam!=null ? Integer.valueOf(limitParam): LIMIT;
+        Integer limit = limitParam != null ? Integer.valueOf(limitParam) : LIMIT;
 
         String acceptType = request.getHeaders("Accept").nextElement();
 
-        logger.info("Getting country with parameters: {},{},{},{},{}", name, continent, population,limit, page);
+        logger.info("Getting country with parameters: {},{},{},{},{}", name, continent, population, limit, page);
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<Country> country = countryService.getCountriesByCriteria(name, continent, population, limit, page);

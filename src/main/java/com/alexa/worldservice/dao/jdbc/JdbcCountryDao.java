@@ -153,6 +153,7 @@ public class JdbcCountryDao implements CountryDao {
             int offset = (page - 1) * limit;
             defaultQuery = defaultQuery + " LIMIT " + limit + " OFFSET " + offset;
         }
+        logger.info("Getting data from SQL query: {}",defaultQuery);
         return defaultQuery;
     }
 }

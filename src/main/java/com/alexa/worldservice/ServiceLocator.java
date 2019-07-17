@@ -22,11 +22,7 @@ import java.util.Properties;
 public class ServiceLocator {
     private static final Logger logger = LoggerFactory.getLogger(ServiceLocator.class);
     private static final String localPropFileName = "application.local.properties";
-
-    private static final XmlMapper xmlMapper = new XmlMapper();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Map<Class<?>, Object> LOCATOR = initDefaultDependencies();
-
 
     private static Map<Class<?>, Object> initDefaultDependencies() {
 
@@ -40,8 +36,8 @@ public class ServiceLocator {
         CountryService countryService = new DefaultCountryService(countryDao);
 
         map.put(CountryService.class, countryService);
-        map.put(XmlMapper.class,xmlMapper);
-        map.put(ObjectMapper.class,objectMapper);
+        map.put(XmlMapper.class,new XmlMapper());
+        map.put(ObjectMapper.class,new ObjectMapper());
 
         return map;
     }
