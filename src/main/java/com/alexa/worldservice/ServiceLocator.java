@@ -4,6 +4,8 @@ import com.alexa.worldservice.dao.CountryDao;
 import com.alexa.worldservice.dao.jdbc.JdbcCountryDao;
 import com.alexa.worldservice.service.CountryService;
 import com.alexa.worldservice.service.DefaultCountryService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
@@ -34,6 +36,8 @@ public class ServiceLocator {
         CountryService countryService = new DefaultCountryService(countryDao);
 
         map.put(CountryService.class, countryService);
+        map.put(XmlMapper.class, new XmlMapper());
+        map.put(ObjectMapper.class, new ObjectMapper());
 
         return map;
     }

@@ -19,8 +19,8 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
-    private final XmlMapper xmlMapper = new XmlMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override

@@ -22,7 +22,7 @@ import java.util.List;
 @WebServlet(urlPatterns = "/api/v1/language")
 public class CountriesByLanguageServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = ServiceLocator.get(ObjectMapper.class);
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
 
