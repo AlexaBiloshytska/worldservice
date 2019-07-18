@@ -1,9 +1,9 @@
 package com.alexa.worldservice.service;
 
-import com.alexa.worldservice.entity.City;
+import com.alexa.worldservice.entity.SearchCity;
 
 import java.util.List;
 
 public interface CityService {
-    List<City> getCitiesByCriteria(String country, String name, String continent);
+    List<SearchCity> getCitiesByCriteria(Boolean country, Boolean name, Boolean continent);
 }

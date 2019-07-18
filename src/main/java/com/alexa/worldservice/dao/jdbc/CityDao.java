@@ -1,9 +1,9 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.City;
+import com.alexa.worldservice.entity.SearchCity;
 
 import java.util.List;
 
 public interface CityDao {
-    List<City> searchCityByCriteria(String country, String name, String continent);
+    List<SearchCity> searchCityByCriteria(Boolean country, Boolean name, Boolean continent);
 }

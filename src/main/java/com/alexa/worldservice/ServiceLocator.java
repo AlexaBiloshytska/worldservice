@@ -1,8 +1,12 @@
 package com.alexa.worldservice;
 
 import com.alexa.worldservice.dao.CountryDao;
+import com.alexa.worldservice.dao.jdbc.CityDao;
+import com.alexa.worldservice.dao.jdbc.JdbcCityDao;
 import com.alexa.worldservice.dao.jdbc.JdbcCountryDao;
+import com.alexa.worldservice.service.CityService;
 import com.alexa.worldservice.service.CountryService;
+import com.alexa.worldservice.service.DefaultCityService;
 import com.alexa.worldservice.service.DefaultCountryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -35,11 +39,13 @@ public class ServiceLocator {
         //config dao
         HikariDataSource dataSource = getHikariDataSource();
         CountryDao countryDao = new JdbcCountryDao(dataSource);
-
+        CityDao cityDao = new JdbcCityDao(dataSource);
         //config services
         CountryService countryService = new DefaultCountryService(countryDao);
+        CityService cityService = new DefaultCityService(cityDao);
 
         map.put(CountryService.class, countryService);
+        map.put(CityService.class,cityService);
         map.put(XmlMapper.class,xmlMapper);
         map.put(ObjectMapper.class,objectMapper);
 

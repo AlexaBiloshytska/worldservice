@@ -5,9 +5,7 @@ import org.mockito.Mock;
 
 import javax.sql.DataSource;
 
-import static org.junit.Assert.*;
-
-public class JdbcCityDaoTest {
+public class JdbcSearchCityDaoTest {
     @Mock
     private DataSource dataSource;
 
@@ -15,7 +13,7 @@ public class JdbcCityDaoTest {
     public void getGetCityByCriteriaQuery() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
-        String cityByCriteriaQuery = jdbcCityDao.getGetCityByCriteriaQuery("al","iv","Europe");
+        String cityByCriteriaQuery = jdbcCityDao.getCityByCriteriaQuery(Boolean.parseBoolean("al"),Boolean.parseBoolean("iv"),Boolean.parseBoolean("Europe"));
         System.out.println(cityByCriteriaQuery);
 
     }
