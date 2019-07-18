@@ -4,7 +4,6 @@ import com.shelberg.entity.Country;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -67,6 +66,34 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Republic",countries.get(0).getGovernmentForm());
         Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
         Assert.assertEquals("Tirana", countries.get(0).getCapital());
+
+    }
+
+    @Test
+    public void add(){
+        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+        Country country = new Country();
+        country.setCode("UKR");
+        country.setName("Ukraine");
+        country.setContinent("Europe");
+        country.setRegion("Eastern Europe");
+        country.setSurfaceArea(603.628);
+        country.setIndepYear(1991);
+        country.setPopulation(145000);
+        country.setLifeExpectancy(70.0);
+        country.setHeadOfState("Volodymyr Zelenskyi");
+        country.setGovernmentForm("Republic");
+
+        jdbcCountryDao.add(country);
+
+    }
+
+
+    @Test
+    public void delete() {
+        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+        String name = "Aruba";
+        jdbcCountryDao.delete(name);
 
     }
 }

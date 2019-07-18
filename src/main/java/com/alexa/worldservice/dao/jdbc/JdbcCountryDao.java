@@ -46,6 +46,19 @@ public class JdbcCountryDao implements CountryDao {
             "left join city as t on t.id = c.capital " +
             "where lang.language = ?";
 
+    private static final String ADD_COUNTRY = "INSERT INTO country (code," +
+            "name," +
+            "continent," +
+            "region," +
+            "surfacearea," +
+            "indepyear," +
+            "population," +
+            "lifeexpectancy," +
+            "governmentform," +
+            "headofstate) VALUES(?,?,?,?,?,?,?,?,?,?)";
+
+    private static final String DELETE_COUNTRY ="delete from country where name =?";
+
     private DataSource dataSource;
 
     public JdbcCountryDao(DataSource dataSource) {
@@ -59,8 +72,8 @@ public class JdbcCountryDao implements CountryDao {
 
             preparedStatement.setString(1, name);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(!resultSet.next()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
                     logger.error("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
@@ -100,6 +113,46 @@ public class JdbcCountryDao implements CountryDao {
             logger.error("Unable to execute sql query: {}", GET_COUNTRIES_BY_LANGUAGE, e);
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
         }
+    }
+
+    @Override
+    public void add(Country country) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY)) {
+
+            preparedStatement.setString(1, country.getCode());
+            preparedStatement.setString(2, country.getName());
+            preparedStatement.setString(3, country.getContinent());
+            preparedStatement.setString(4, country.getRegion());
+            preparedStatement.setDouble(5, country.getSurfaceArea());
+            preparedStatement.setInt(6, country.getIndepYear());
+            preparedStatement.setLong(7, country.getPopulation());
+            preparedStatement.setDouble(8, country.getLifeExpectancy());
+            preparedStatement.setString(9, country.getGovernmentForm());
+            preparedStatement.setString(10, country.getHeadOfState());
+            preparedStatement.execute();
+
+            logger.info("Data is successfully inserted {}", country);
+
+        } catch (SQLException e) {
+            logger.error("Unable to insert data in sql table {}", country);
+
+        }
+    }
+
+    @Override
+    public void delete(String name) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COUNTRY)){
+
+            preparedStatement.setString(1, name);
+
+            logger.info("Deleting country with name {}", name);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 
