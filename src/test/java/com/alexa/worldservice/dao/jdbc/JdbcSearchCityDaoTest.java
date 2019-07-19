@@ -13,7 +13,7 @@ public class JdbcSearchCityDaoTest {
     public void getGetCityByCriteriaQuery() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
-        String cityByCriteriaQuery = jdbcCityDao.getCityByCriteriaQuery(Boolean.parseBoolean("al"),Boolean.parseBoolean("iv"),Boolean.parseBoolean("Europe"));
+       String cityByCriteriaQuery = jdbcCityDao.getCityByCriteriaQuery(Boolean.parseBoolean("al"),Boolean.parseBoolean("iv"),Boolean.parseBoolean("Europe"),"al", "iv", "Europe");
         System.out.println(cityByCriteriaQuery);
 
     }

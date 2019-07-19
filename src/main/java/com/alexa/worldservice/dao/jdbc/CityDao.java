@@ -5,5 +5,5 @@ import com.alexa.worldservice.entity.SearchCity;
 import java.util.List;
 
 public interface CityDao {
-    List<SearchCity> searchCityByCriteria(Boolean country, Boolean name, Boolean continent);
+    List<SearchCity> searchCityByCriteria(boolean countryRequired, boolean populationRequired, boolean countryPopulationRequired, String country, String name, String continent);
 }

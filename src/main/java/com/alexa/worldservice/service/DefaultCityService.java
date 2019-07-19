@@ -13,7 +13,9 @@ public class DefaultCityService implements CityService {
     }
 
     @Override
-    public List<SearchCity> getCitiesByCriteria(Boolean country, Boolean name, Boolean continent) {
-        return cityDao.searchCityByCriteria(country,name,continent);
+    public List<SearchCity> getCitiesByCriteria(boolean countryReqired, boolean populationRequired, boolean countryPopulationRequired, String
+                                                country, String name, String continent) {
+        return cityDao.searchCityByCriteria(countryReqired, populationRequired, countryPopulationRequired, country,name, continent);
     }
+
 }
