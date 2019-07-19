@@ -21,6 +21,7 @@ public class JdbcCountryDao implements CountryDao {
     private static final Logger logger = LoggerFactory.getLogger(JdbcCountryDao.class);
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
     private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
+    public static final String GET_CAPITAL_ID = "select c.id from city c where c.name = ?";
     private static final String GET_LANGUAGE_STATISTICS = "select c.code," +
             "c.name, " +
             "c.continent, " +
@@ -55,9 +56,10 @@ public class JdbcCountryDao implements CountryDao {
             "population," +
             "lifeexpectancy," +
             "governmentform," +
-            "headofstate) VALUES(?,?,?,?,?,?,?,?,?,?)";
+            "headofstate, " +
+            "capital ) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
-    private static final String DELETE_COUNTRY ="delete from country where name =?";
+    private static final String DELETE_COUNTRY = "delete from country where name =?";
 
     private DataSource dataSource;
 
@@ -118,24 +120,29 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void add(Country country) {
         try (Connection connection = dataSource.getConnection();
+             PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_ID);
              PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY)) {
 
-            preparedStatement.setString(1, country.getCode());
-            preparedStatement.setString(2, country.getName());
-            preparedStatement.setString(3, country.getContinent());
-            preparedStatement.setString(4, country.getRegion());
-            preparedStatement.setDouble(5, country.getSurfaceArea());
-            preparedStatement.setInt(6, country.getIndepYear());
-            preparedStatement.setLong(7, country.getPopulation());
-            preparedStatement.setDouble(8, country.getLifeExpectancy());
-            preparedStatement.setString(9, country.getGovernmentForm());
-            preparedStatement.setString(10, country.getHeadOfState());
-            preparedStatement.execute();
+            try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
+                int capitalId = capitalResultSet.getInt("id");
 
-            logger.info("Data is successfully inserted {}", country);
+                preparedStatement.setString(1, country.getCode());
+                preparedStatement.setString(2, country.getName());
+                preparedStatement.setString(3, country.getContinent());
+                preparedStatement.setString(4, country.getRegion());
+                preparedStatement.setDouble(5, country.getSurfaceArea());
+                preparedStatement.setInt(6, country.getIndepYear());
+                preparedStatement.setLong(7, country.getPopulation());
+                preparedStatement.setDouble(8, country.getLifeExpectancy());
+                preparedStatement.setString(9, country.getGovernmentForm());
+                preparedStatement.setInt(10, capitalId);
+                preparedStatement.execute();
+            }
+            logger.info("Country is successfully inserted {}", country);
 
         } catch (SQLException e) {
             logger.error("Unable to insert data in sql table {}", country);
+            throw new RuntimeException("Unable to save country: " + country, e);
 
         }
     }
@@ -143,7 +150,7 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void delete(String name) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COUNTRY)){
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COUNTRY)) {
 
             preparedStatement.setString(1, name);
 

@@ -33,7 +33,9 @@ public class AddCountryServlet extends HttpServlet {
         country.setLifeExpectancy(Double.parseDouble(request.getParameter("lifeexpectancy")));
         country.setGovernmentForm(request.getParameter("governmentform"));
         country.setHeadOfState(request.getParameter("headofstate"));
-        country.setCapital(request.getParameter("capital"));
+        String capital = request.getParameter("capital");
+        country.setCapital(capital);
+
 
         countryService.add(country);
     }
