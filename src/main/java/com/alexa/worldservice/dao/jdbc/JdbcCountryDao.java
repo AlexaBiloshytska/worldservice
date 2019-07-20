@@ -73,8 +73,8 @@ public class JdbcCountryDao implements CountryDao {
 
             preparedStatement.setString(1, name);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if ( !resultSet.next()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
                     logger.error("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }

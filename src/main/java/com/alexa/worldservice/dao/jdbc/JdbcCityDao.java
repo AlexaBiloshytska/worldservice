@@ -1,25 +1,36 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.entity.City;
 import com.alexa.worldservice.entity.SearchCity;
+import com.alexa.worldservice.exception.NoDataFoundException;
+import com.alexa.worldservice.mapper.CityMapper;
 import com.alexa.worldservice.mapper.SearchCityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcCityDao implements CityDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final SearchCityMapper CITY_MAPPER = new SearchCityMapper();
+    private static final SearchCityMapper SEARCH_CITY_MAPPER = new SearchCityMapper();
+    private static final CityMapper CITY_MAPPER = new CityMapper();
     private static final String GET_CITY_BY_CRITERIA =
             "select c.name, c.district %s %s %s " +
                     "from city as c join country as cc on c.country_code = cc.code " +
                     "where 1=1 ";
+
+    private static final String ADD_CITY = "INSERT INTO city" +
+            "(id,name, country_code,district,population) values(?,?,?,?,?)";
+
+    private static final String UPDATE_CITY = "UPDATE city set name=?, " +
+            " country_code =?, district =?,population =? where id =?";
+
+    private static final String DELETE_CITY = "delete from city where id =?";
+
+    private static final String GET_CITY_BY_ID = "select c.id, c.name, c.district, c.country_code, c.population from city c where c.id = ?";
 
     private DataSource dataSource;
 
@@ -43,12 +54,12 @@ public class JdbcCityDao implements CityDao {
             ResultSet resultSet = statement.executeQuery(criteriaCityQuery);
             List<SearchCity> cities = new ArrayList<>();
             while (resultSet.next()) {
-                cities.add(CITY_MAPPER.mapRow(resultSet, countryRequired, populationRequired, countryPopulationRequired));
+                cities.add(SEARCH_CITY_MAPPER.mapRow(resultSet, countryRequired, populationRequired, countryPopulationRequired));
             }
             return cities;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to execute sql query: " + GET_CITY_BY_CRITERIA, e);
+            throw new RuntimeException("Unable to execute sql query: {}" + GET_CITY_BY_CRITERIA, e);
         }
     }
 
@@ -67,7 +78,7 @@ public class JdbcCityDao implements CityDao {
         defaultQuery = String.format(defaultQuery, countryNamePlaceHolder, populationPlaceHolder, countryPopulationPlaceHolder);
 
         if (country != null) {
-            defaultQuery = defaultQuery + " AND lower(cc.name) as country like '%" + country.toLowerCase() + "%'";
+            defaultQuery = defaultQuery + " AND lower(cc.name) like '%" + country.toLowerCase() + "%'";
         }
         if (name != null) {
             defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
@@ -75,8 +86,83 @@ public class JdbcCityDao implements CityDao {
         if (continent != null) {
             defaultQuery = defaultQuery + " AND lower(cc.continent) like '%" + continent.toLowerCase() + "%'";
         }
-        logger.info("Getting the query with additional parameters: {}",defaultQuery );
+        logger.info("Getting the query with additional parameters: {}", defaultQuery);
 
         return defaultQuery;
+    }
+
+    @Override
+    public void add(City city) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(ADD_CITY)) {
+
+            preparedStatement.setInt(1, city.getId());
+            preparedStatement.setString(2, city.getName());
+            preparedStatement.setString(3, city.getCountryCode());
+            preparedStatement.setString(4, city.getDistrict());
+            preparedStatement.setInt(5, city.getPopulation());
+
+            preparedStatement.execute();
+
+            logger.info("City is successfully inserted {}", city);
+
+        } catch (SQLException e) {
+            logger.error("City insertion is failed {}", city, e);
+        }
+    }
+
+    @Override
+    public void update(City city) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CITY)) {
+
+            preparedStatement.setString(1, city.getName());
+            preparedStatement.setString(2, city.getCountryCode());
+            preparedStatement.setString(3, city.getDistrict());
+            preparedStatement.setInt(4, city.getPopulation());
+            preparedStatement.setInt(5, city.getId());
+
+            preparedStatement.executeUpdate();
+
+            logger.info("City with id: {} is successfully updated ", city.getId());
+
+        } catch (SQLException e) {
+            logger.error("City update is failed {}", city, e);
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CITY)) {
+
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.execute();
+
+            logger.info("City with id {} is successfully deleted ", id);
+
+        } catch (SQLException e) {
+            logger.error("City deletion with id {} is failed ", id, e);
+        }
+    }
+
+    @Override
+    public City getCityById(int id) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_CITY_BY_ID)) {
+
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
+                    logger.error("resultSet is empty");
+                    throw new NoDataFoundException("Non-empty resultSet expected");
+                }
+                return CITY_MAPPER.mapRow(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.warn("Unable to get city with id {}", id, e);
+            throw new RuntimeException("Unable to get city with id = " + id, e);
+        }
     }
 }
