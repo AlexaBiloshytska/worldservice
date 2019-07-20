@@ -1,23 +1,24 @@
 package com.alexa.worldservice.mapper;
 
-import com.alexa.worldservice.entity.SearchCity;
+import com.shelberg.entity.SearchCity;
+import com.shelberg.search.CitySearchQuery;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SearchCityMapper {
 
-    public SearchCity mapRow(ResultSet resultSet, boolean countryRequired, boolean populationRequied, boolean countryPopulationRequired) throws SQLException {
+    public SearchCity mapRow(ResultSet resultSet, CitySearchQuery citySearchQuery) throws SQLException {
         SearchCity city = new SearchCity();
         city.setName(resultSet.getString("name"));
         city.setDistrict(resultSet.getString("district"));
-        if (countryRequired) {
+        if (citySearchQuery.isCountryRequired()) {
             city.setCountryName(resultSet.getString("countryName"));
         }
-        if (populationRequied) {
+        if (citySearchQuery.isPopulationRequired()) {
             city.setPopulation(resultSet.getInt("population"));
         }
-        if (countryPopulationRequired) {
+        if (citySearchQuery.isCountryPopulationRequired()) {
             city.setCountryPopulation(resultSet.getInt("countryPopulation"));
         }
         return city;

@@ -1,5 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.shelberg.search.CountrySearchQuery;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -14,7 +15,18 @@ public class JdbcCountryDaoTest {
     public void searchByName() {
 
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-        String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery("Ukraine", "Europe", 45000, 2, 5);
+        int population = 100;
+        int page = 1;
+        int limit = 5;
+        String name = "ang";
+        String continent = "Europe";
+        CountrySearchQuery countrySearchQuery = new CountrySearchQuery.Builder(name, continent)
+                .setPopulation(population)
+                .setLimit(limit)
+                .setPage(page)
+                .build();
+
+        String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery(countrySearchQuery);
         System.out.println(countryCriteriaQuery);
     }
 }

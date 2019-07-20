@@ -38,6 +38,7 @@ public class CountryServlet extends HttpServlet {
                 String xml = xmlMapper.writerWithView(CountryStatistic.class).writeValueAsString(country);
                 response.setContentType(MimeType.APPLICATION_XML.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
+                response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(xml);
             } catch (NoDataFoundException e) {
                 logger.warn("The country with name: {} is not found", countryName);
