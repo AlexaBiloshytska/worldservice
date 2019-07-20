@@ -31,7 +31,6 @@ public class ServiceLocator {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Map<Class<?>, Object> LOCATOR = initDefaultDependencies();
 
-
     private static Map<Class<?>, Object> initDefaultDependencies() {
 
         Map<Class<?>, Object> map = new HashMap<>();

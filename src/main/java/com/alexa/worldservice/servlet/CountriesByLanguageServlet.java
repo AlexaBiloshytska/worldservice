@@ -18,11 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@JsonView(CountryData.class)
 @WebServlet(urlPatterns = "/api/v1/language")
 public class CountriesByLanguageServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final ObjectMapper mapper = ServiceLocator.get(ObjectMapper.class);
     private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
@@ -43,10 +41,6 @@ public class CountriesByLanguageServlet extends HttpServlet {
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
-
-        logger.info("Finished getting countries by language  {} ", language, startTime - System.currentTimeMillis());
+        logger.info("Finished getting countries by language {},{} ", language, startTime - System.currentTimeMillis());
     }
 }
-
-
-

@@ -14,7 +14,7 @@ public class JdbcCountryDaoTest {
     public void searchByName() {
 
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-        String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery("Ukraine", "Europe", 45000, 2);
+        String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery("Ukraine", "Europe", 45000, 2, 5);
         System.out.println(countryCriteriaQuery);
     }
 }

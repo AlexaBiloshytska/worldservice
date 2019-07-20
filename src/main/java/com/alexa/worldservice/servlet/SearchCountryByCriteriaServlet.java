@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/api/v1/search")
+@WebServlet(urlPatterns = "/api/v1/search/country")
 public class SearchCountryByCriteriaServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer LIMIT = 5;
@@ -37,14 +37,14 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
         Integer page = pageParam != null ? Integer.valueOf(pageParam) : 1;
 
         String limitParam = request.getParameter("limit");
-        Integer limit = limitParam!=null ? Integer.valueOf(limitParam): LIMIT;
+        Integer limit = limitParam != null ? Integer.valueOf(limitParam) : LIMIT;
 
         String acceptType = request.getHeaders("Accept").nextElement();
 
-        logger.info("Getting country with parameters: {},{},{},{},{}", name, continent, population,limit, page);
+        logger.info("Getting country with parameters: {},{},{},{},{}", name, continent, population, page, limit);
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
-            List<Country> country = countryService.getCountriesByCriteria(name, continent, population, limit, page);
+            List<Country> country = countryService.getCountriesByCriteria(name, continent, population, page, limit);
             String xml = xmlMapper.writerWithView(Views.CountryData.class).writeValueAsString(country);
             response.setContentType(MimeType.APPLICATION_XML.getValue());
             response.setStatus(HttpServletResponse.SC_OK);
