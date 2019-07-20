@@ -48,7 +48,7 @@ public class JdbcCityDao implements CityDao {
             return cities;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to execute sql query: " + GET_CITY_BY_CRITERIA, e);
+            throw new RuntimeException("Unable to execute sql query: {}" + GET_CITY_BY_CRITERIA, e);
         }
     }
 
