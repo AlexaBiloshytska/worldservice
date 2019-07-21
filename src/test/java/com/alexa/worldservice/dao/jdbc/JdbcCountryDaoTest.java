@@ -94,6 +94,5 @@ public class JdbcCountryDaoTest {
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
         String name = "Aruba";
         jdbcCountryDao.delete(name);
-
     }
 }

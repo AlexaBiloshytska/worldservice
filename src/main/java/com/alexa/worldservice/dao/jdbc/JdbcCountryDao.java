@@ -168,7 +168,9 @@ public class JdbcCountryDao implements CountryDao {
 
     private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
+            capitalResultSet.next();
             int capitalId = capitalResultSet.getInt("id");
+
 
             preparedStatement.setString(1, country.getCode());
             preparedStatement.setString(2, country.getName());
