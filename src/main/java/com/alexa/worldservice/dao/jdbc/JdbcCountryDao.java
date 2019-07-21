@@ -59,6 +59,10 @@ public class JdbcCountryDao implements CountryDao {
             "headofstate, " +
             "capital ) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
+    private static final String UPDATE_COUNTRY = "UPDATE country as c set c.name=?, c.continent = ?," +
+            "c.region = ?,c.surfacearea = ?, c.indepyear =?, c.population=?," +
+            " c.lifeexpectancy=?, c.governmentform=?,c.headofstate = ?,c.capital =?";
+
     private static final String DELETE_COUNTRY = "delete from country where name =?";
 
     private DataSource dataSource;
@@ -123,21 +127,7 @@ public class JdbcCountryDao implements CountryDao {
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_ID);
              PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY)) {
 
-            try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
-                int capitalId = capitalResultSet.getInt("id");
-
-                preparedStatement.setString(1, country.getCode());
-                preparedStatement.setString(2, country.getName());
-                preparedStatement.setString(3, country.getContinent());
-                preparedStatement.setString(4, country.getRegion());
-                preparedStatement.setDouble(5, country.getSurfaceArea());
-                preparedStatement.setInt(6, country.getIndepYear());
-                preparedStatement.setLong(7, country.getPopulation());
-                preparedStatement.setDouble(8, country.getLifeExpectancy());
-                preparedStatement.setString(9, country.getGovernmentForm());
-                preparedStatement.setInt(10, capitalId);
-                preparedStatement.execute();
-            }
+            countryProcessing(country, capitalStatement, preparedStatement);
             logger.info("Country is successfully inserted {}", country);
 
         } catch (SQLException e) {
@@ -160,6 +150,38 @@ public class JdbcCountryDao implements CountryDao {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void update(Country country) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_ID);
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COUNTRY)) {
+
+            countryProcessing(country, capitalStatement, preparedStatement);
+            logger.info("Country is successfully updated {}", country);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to update country", e);
+        }
+    }
+
+    private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
+        try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
+            int capitalId = capitalResultSet.getInt("id");
+
+            preparedStatement.setString(1, country.getCode());
+            preparedStatement.setString(2, country.getName());
+            preparedStatement.setString(3, country.getContinent());
+            preparedStatement.setString(4, country.getRegion());
+            preparedStatement.setDouble(5, country.getSurfaceArea());
+            preparedStatement.setInt(6, country.getIndepYear());
+            preparedStatement.setLong(7, country.getPopulation());
+            preparedStatement.setDouble(8, country.getLifeExpectancy());
+            preparedStatement.setString(9, country.getGovernmentForm());
+            preparedStatement.setInt(10, capitalId);
+            preparedStatement.execute();
+        }
     }
 }
 

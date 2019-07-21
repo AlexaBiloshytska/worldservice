@@ -10,4 +10,5 @@ public interface CountryDao {
     List<Country> getCountriesByLanguage(String language);
     void add(Country country);
     void delete (String name);
+    void update (Country country);
 }

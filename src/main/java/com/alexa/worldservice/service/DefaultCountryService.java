@@ -30,4 +30,9 @@ public class DefaultCountryService implements CountryService {
         countryDao.delete(name);
     }
 
+    @Override
+    public void update(Country country) {
+        countryDao.update(country);
+    }
+
 }
