@@ -69,7 +69,7 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountry(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
-            logger.info("Getting data from SQL query: ", GET_LANGUAGE_STATISTICS);
+            logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
 
             preparedStatement.setString(1, name);
 
@@ -122,13 +122,13 @@ public class JdbcCountryDao implements CountryDao {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery(criteriaQuery);
-            List<Country> countries = new ArrayList<>();
-            while (resultSet.next()) {
-                countries.add(COUNTRY_MAPPER.mapRow(resultSet));
-            }
-            return countries;
-
+           try( ResultSet resultSet = statement.executeQuery(criteriaQuery)){
+               List<Country> countries = new ArrayList<>();
+               while (resultSet.next()) {
+                   countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+               }
+               return countries;
+           }
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRY_BY_CRITERIA, e);
         }

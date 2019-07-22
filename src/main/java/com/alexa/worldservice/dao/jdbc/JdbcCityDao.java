@@ -1,5 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.entity.CityCriteria;
 import com.alexa.worldservice.entity.SearchCity;
 import com.alexa.worldservice.mapper.SearchCityMapper;
 import org.slf4j.Logger;
@@ -28,14 +29,8 @@ public class JdbcCityDao implements CityDao {
     }
 
     @Override
-    public List<SearchCity> searchCityByCriteria(boolean countryRequired, boolean populationRequired, boolean countryPopulationRequired, String country,
-                                                 String name, String continent) {
-        String criteriaCityQuery = getCityByCriteriaQuery(countryRequired,
-                populationRequired,
-                countryPopulationRequired,
-                country,
-                name,
-                continent);
+    public List<SearchCity> searchCityByCriteria(CityCriteria cityCriteria) {
+        String criteriaCityQuery = getCityByCriteriaQuery(cityCriteria);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -43,40 +38,46 @@ public class JdbcCityDao implements CityDao {
             ResultSet resultSet = statement.executeQuery(criteriaCityQuery);
             List<SearchCity> cities = new ArrayList<>();
             while (resultSet.next()) {
-                cities.add(CITY_MAPPER.mapRow(resultSet, countryRequired, populationRequired, countryPopulationRequired));
+                cities.add(CITY_MAPPER.mapRow(resultSet, cityCriteria));
             }
             return cities;
-
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to execute sql query: {}" + GET_CITY_BY_CRITERIA, e);
+            throw new RuntimeException("Unable to execute sql query:" + GET_CITY_BY_CRITERIA, e);
         }
     }
 
-    String getCityByCriteriaQuery(boolean countryRequired,
-                                  boolean populationRequired,
-                                  boolean countryPopulationRequired,
-                                  String country,
-                                  String name,
-                                  String continent) {
-        String defaultQuery = GET_CITY_BY_CRITERIA;
+    String getCityByCriteriaQuery(CityCriteria cityCriteria) {
 
-        String countryNamePlaceHolder = countryRequired ? ",cc.name as countryName " : "";
-        String populationPlaceHolder = populationRequired ? ",c.population as population" : "";
-        String countryPopulationPlaceHolder = countryPopulationRequired ? ",cc.population as countryPopulation" : "";
+        String countryNamePlaceHolder = cityCriteria.isCountryRequired() ? ",cc.name as countryName " : "";
+        String populationPlaceHolder = cityCriteria.isPopulationRequired() ? ",c.population as population" : "";
+        String countryPopulationPlaceHolder = cityCriteria.isCountryPopulationRequired() ? ",cc.population as countryPopulation" : "";
 
-        defaultQuery = String.format(defaultQuery, countryNamePlaceHolder, populationPlaceHolder, countryPopulationPlaceHolder);
-
-        if (country != null) {
-            defaultQuery = defaultQuery + " AND lower(cc.name) as country like '%" + country.toLowerCase() + "%'";
+        StringBuilder stringBuilder = new StringBuilder(
+                String.format(GET_CITY_BY_CRITERIA,
+                        countryNamePlaceHolder,
+                        populationPlaceHolder,
+                        countryPopulationPlaceHolder));
+        if (cityCriteria.getCountry() != null) {
+            stringBuilder
+                    .append(" AND lower(cc.name) as country like '%")
+                    .append(cityCriteria.getCountry().toLowerCase())
+                    .append("%'");
         }
-        if (name != null) {
-            defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
+        if (cityCriteria.getName() != null) {
+            stringBuilder.
+                    append( " AND lower(c.name) like '%" ).
+                    append( cityCriteria.getName().toLowerCase()).
+                    append( "%'");
         }
-        if (continent != null) {
-            defaultQuery = defaultQuery + " AND lower(cc.continent) like '%" + continent.toLowerCase() + "%'";
+        if (cityCriteria.getContinent() != null) {
+            stringBuilder
+                    .append(" AND lower(cc.continent) like '%" )
+                    .append( cityCriteria.getContinent().toLowerCase() )
+                    .append( "%'");
         }
-        logger.info("Getting the query with additional parameters: {}",defaultQuery );
 
-        return defaultQuery;
+        logger.info("Getting the query with additional parameters: {}", stringBuilder.toString());
+
+        return stringBuilder.toString();
     }
 }

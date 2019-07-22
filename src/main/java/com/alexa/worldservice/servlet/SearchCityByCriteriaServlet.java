@@ -19,7 +19,7 @@ import java.util.List;
 @WebServlet(urlPatterns = "/api/v1/search/city")
 public class SearchCityByCriteriaServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final XmlMapper xmlMapper = new XmlMapper();
+    private final XmlMapper xmlMapper =  ServiceLocator.get(XmlMapper.class);
     private final CityService cityService = ServiceLocator.get(CityService.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
