@@ -21,9 +21,8 @@ public class JdbcCountryDao implements CountryDao {
     private static final Logger logger = LoggerFactory.getLogger(JdbcCountryDao.class);
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
     private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
-    public static final String GET_CAPITAL_ID = "select c.id from city c where c.name = ?";
-    private static final String GET_LANGUAGE_STATISTICS = "select c.code," +
-            "c.name, " +
+    public static final String GET_CAPITAL_NAME = "select c.id from city c where c.name = ?";
+    private static final String GET_LANGUAGE_STATISTICS = "select c.name, " +
             "c.continent, " +
             "c.region, " +
             "c.surfacearea, " +
@@ -36,6 +35,7 @@ public class JdbcCountryDao implements CountryDao {
             "c.governmentform, " +
             "c.headofstate, " +
             "c.capital " +
+            "c.code" +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
@@ -47,8 +47,7 @@ public class JdbcCountryDao implements CountryDao {
             "left join city as t on t.id = c.capital " +
             "where lang.language = ?";
 
-    private static final String ADD_COUNTRY = "INSERT INTO country (code," +
-            "name," +
+    private static final String ADD_COUNTRY = "INSERT INTO country (name," +
             "continent," +
             "region," +
             "surfacearea," +
@@ -57,11 +56,19 @@ public class JdbcCountryDao implements CountryDao {
             "lifeexpectancy," +
             "governmentform," +
             "headofstate, " +
-            "capital ) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            "capital, " +
+            "code," +
+            "code2) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    private static final String UPDATE_COUNTRY = "UPDATE country as c set c.name=?, c.continent = ?," +
-            "c.region = ?,c.surfacearea = ?, c.indepyear =?, c.population=?," +
-            " c.lifeexpectancy=?, c.governmentform=?,c.headofstate = ?,c.capital =?";
+    private static final String UPDATE_COUNTRY = "UPDATE country set " +
+            "name=?, " +
+            "continent = ?," +
+            "region = ?," +
+            "surfacearea = ?," +
+            "indepyear =?, " +
+            "population=?," +
+            "lifeexpectancy=?, " +
+            "governmentform=?,headofstate = ?,capital =?, code2 =? where code =?";
 
     private static final String DELETE_COUNTRY = "delete from country where name =?";
 
@@ -124,8 +131,10 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void add(Country country) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_ID);
+             PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
              PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY)) {
+
+            capitalStatement.setString(1, country.getCapital());
 
             countryProcessing(country, capitalStatement, preparedStatement);
             logger.info("Country is successfully inserted {}", country);
@@ -155,8 +164,10 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void update(Country country) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_ID);
+             PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COUNTRY)) {
+
+            capitalStatement.setString(1, country.getCapital());
 
             countryProcessing(country, capitalStatement, preparedStatement);
             logger.info("Country is successfully updated {}", country);
@@ -171,17 +182,18 @@ public class JdbcCountryDao implements CountryDao {
             capitalResultSet.next();
             int capitalId = capitalResultSet.getInt("id");
 
-
-            preparedStatement.setString(1, country.getCode());
-            preparedStatement.setString(2, country.getName());
-            preparedStatement.setString(3, country.getContinent());
-            preparedStatement.setString(4, country.getRegion());
-            preparedStatement.setDouble(5, country.getSurfaceArea());
-            preparedStatement.setInt(6, country.getIndepYear());
-            preparedStatement.setLong(7, country.getPopulation());
-            preparedStatement.setDouble(8, country.getLifeExpectancy());
-            preparedStatement.setString(9, country.getGovernmentForm());
+            preparedStatement.setString(1, country.getName());
+            preparedStatement.setString(2, country.getContinent());
+            preparedStatement.setString(3, country.getRegion());
+            preparedStatement.setDouble(4, country.getSurfaceArea());
+            preparedStatement.setInt(5, country.getIndepYear());
+            preparedStatement.setLong(6, country.getPopulation());
+            preparedStatement.setDouble(7, country.getLifeExpectancy());
+            preparedStatement.setString(8, country.getGovernmentForm());
+            preparedStatement.setString(9, country.getHeadOfState());
             preparedStatement.setInt(10, capitalId);
+            preparedStatement.setString(11, country.getCode());
+            preparedStatement.setString(12, country.getCode2());
             preparedStatement.execute();
         }
     }

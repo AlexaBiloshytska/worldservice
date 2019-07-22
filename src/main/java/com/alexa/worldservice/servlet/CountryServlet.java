@@ -4,23 +4,28 @@ import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.service.CountryService;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.shelberg.entity.Views.*;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
+
+import com.shelberg.entity.Views.*;
 
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
+    private final ObjectMapper mapper = ServiceLocator.get(ObjectMapper.class);
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override
@@ -46,6 +51,25 @@ public class CountryServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
         logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String cityJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        Country country = mapper.readValue(cityJson, Country.class);
+
+        countryService.add(country);
+        logger.info("Country is successfully added {}", country);
+    }
+
+    @Override
+    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String cityJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        Country country = mapper.readValue(cityJson, Country.class);
+
+        countryService.update(country);
+        logger.info("Country is successfully updated {}", country);
     }
 }
 
