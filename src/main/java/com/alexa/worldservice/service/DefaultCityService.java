@@ -17,5 +17,4 @@ public class DefaultCityService implements CityService {
     public List<SearchCity> getCitiesByCriteria(CitySearchCriteria citySearchCriteria) {
         return cityDao.searchCityByCriteria(citySearchCriteria);
     }
-
 }

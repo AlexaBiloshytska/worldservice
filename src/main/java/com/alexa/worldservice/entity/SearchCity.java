@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SearchCity {
-    String name;
-    String countryName;
-    String district;
-    Integer population;
-    Integer countryPopulation;
+    private String name;
+    private String countryName;
+    private String district;
+    private Integer population;
+    private Integer countryPopulation;
 }
