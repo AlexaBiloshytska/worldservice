@@ -72,6 +72,8 @@ public class JdbcCountryDao implements CountryDao {
 
     private static final String DELETE_COUNTRY = "delete from country where name =?";
 
+    private static final String GET_COUNTRY_BY_ID = "select * from country where id =?";
+
     private DataSource dataSource;
 
     public JdbcCountryDao(DataSource dataSource) {
@@ -174,6 +176,13 @@ public class JdbcCountryDao implements CountryDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Unable to update country", e);
+        }
+    }
+
+    @Override
+    public void getCountryById(int id) {
+        try(){
+
         }
     }
 

@@ -72,6 +72,21 @@ public class JdbcCountryDaoTest {
     @Test
     public void add(){
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+        Country country = new Country();
+        country.setName("Ukraine");
+        country.setContinent("Erope");
+        country.setRegion("Central Europe");
+        country.setSurfaceArea(300.00);
+        country.setIndepYear(1991);
+        country.setPopulation(10000);
+        country.setLifeExpectancy(75.00);
+        country.setGovernmentForm("Republic");
+        country.setHeadOfState("Volodymyr Zelemskyi");
+        country.setCapital("Qandahar");
+        country.setCode("AFG");
+        country.setCode2("AFG");
+
+        jdbcCountryDao.add(country);
 
     }
 
