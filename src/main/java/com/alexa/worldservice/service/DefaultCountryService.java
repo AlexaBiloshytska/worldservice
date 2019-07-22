@@ -18,11 +18,13 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public List<Country> getCountriesByLanguage(String language) { return countryDao.getCountriesByLanguage(language);
+    public List<Country> getCountriesByLanguage(String language) {
+        return countryDao.getCountriesByLanguage(language);
     }
 
     @Override
-    public void add(Country country) { countryDao.add(country);
+    public void add(Country country) {
+        countryDao.add(country);
     }
 
     @Override
@@ -34,5 +36,4 @@ public class DefaultCountryService implements CountryService {
     public void update(Country country) {
         countryDao.update(country);
     }
-
 }

@@ -72,7 +72,7 @@ public class JdbcCountryDao implements CountryDao {
 
     private static final String DELETE_COUNTRY = "delete from country where name =?";
 
-    private static final String GET_COUNTRY_BY_ID = "select * from country where id =?";
+    private static final String GET_COUNTRY_BY_ID = "select * from city where id =?";
 
     private DataSource dataSource;
 
@@ -179,12 +179,6 @@ public class JdbcCountryDao implements CountryDao {
         }
     }
 
-    @Override
-    public void getCountryById(int id) {
-        try(){
-
-        }
-    }
 
     private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {

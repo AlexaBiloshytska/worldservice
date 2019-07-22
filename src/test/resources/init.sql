@@ -21,11 +21,11 @@ create table country
   lifeexpectancy real,
   gnp            numeric(10, 2),
   gnpold         numeric(10, 2),
-  localname      text      not null,
+  localname      text      ,
   governmentform text      not null,
   headofstate    text,
   capital        integer,
-  code2          char(2)   not null
+  code2          char(100)
 );
 
 create table country_language
