@@ -1,5 +1,6 @@
 package com.alexa.worldservice.mapper;
 
+import com.alexa.worldservice.entity.CitySearchCriteria;
 import com.alexa.worldservice.entity.SearchCity;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,6 +14,7 @@ public class SearchCityMapperTest {
     @Test
     public void mapRow() throws SQLException {
         SearchCityMapper cityMapper = new SearchCityMapper();
+        CitySearchCriteria c = new CitySearchCriteria();
 
         ResultSet mockResultSet = mock(ResultSet.class);
         when(mockResultSet.getString("name")).thenReturn("Chernihiv");
@@ -21,7 +23,7 @@ public class SearchCityMapperTest {
         when(mockResultSet.getInt("population")).thenReturn(1111);
         when(mockResultSet.getInt("countryPopulation")).thenReturn(2222);
 
-        SearchCity city = cityMapper.mapRow(mockResultSet,true, true,true );
+        SearchCity city = cityMapper.mapRow(mockResultSet,c);
 
         Assert.assertNotNull(city);
         Assert.assertEquals("Chernihiv", city.getName());

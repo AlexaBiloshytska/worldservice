@@ -1,6 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
+import com.alexa.worldservice.entity.CountrySearchCriteria;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
@@ -73,8 +74,8 @@ public class JdbcCountryDao implements CountryDao {
 
             preparedStatement.setString(1, name);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if ( !resultSet.next()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
                     logger.error("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
@@ -116,40 +117,52 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public List<Country> searchByCriteria(String name, String continent, Integer population, Integer page, Integer limit) {
-        String criteriaQuery = getCountryCriteriaQuery(name, continent, population, page, limit);
+    public List<Country> searchByCriteria(CountrySearchCriteria countrySearchCriteria) {
+        String criteriaQuery = getCountryCriteriaQuery(countrySearchCriteria);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
 
-           try( ResultSet resultSet = statement.executeQuery(criteriaQuery)){
-               List<Country> countries = new ArrayList<>();
-               while (resultSet.next()) {
-                   countries.add(COUNTRY_MAPPER.mapRow(resultSet));
-               }
-               return countries;
-           }
+            try (ResultSet resultSet = statement.executeQuery(criteriaQuery)) {
+                List<Country> countries = new ArrayList<>();
+                while (resultSet.next()) {
+                    countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+                }
+                return countries;
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRY_BY_CRITERIA, e);
         }
     }
 
-    String getCountryCriteriaQuery(String name, String continent, Integer population, Integer page, Integer limit) {
-        String defaultQuery = GET_COUNTRY_BY_CRITERIA;
-        if (name != null && !name.isEmpty()) {
-            defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
+    String getCountryCriteriaQuery(CountrySearchCriteria countrySearchCriteria) {
+        StringBuilder stringBuilder = new StringBuilder(GET_COUNTRY_BY_CRITERIA);
+        if (CountrySearchCriteria.class.getName() != null && !CountrySearchCriteria.class.getName().isEmpty()) {
+            stringBuilder
+                    .append(" AND lower(c.name) like '%")
+                    .append(countrySearchCriteria.getName().toLowerCase())
+                    .append("%'");
         }
-        if (continent != null && !continent.isEmpty()) {
-            defaultQuery = defaultQuery + " AND lower(c.continent) = '" + continent.toLowerCase() + "'";
+        if (countrySearchCriteria.getContinent() != null && !countrySearchCriteria.getContinent().isEmpty()) {
+            stringBuilder
+                    .append(" AND lower(c.continent) = '")
+                    .append(countrySearchCriteria.getContinent().toLowerCase())
+                    .append("'");
         }
-        if (population != null && population > 0) {
-            defaultQuery = defaultQuery + " AND c.population >= " + population + "";
+        if (countrySearchCriteria.getPopulation() != null && countrySearchCriteria.getPopulation() > 0) {
+            stringBuilder
+                    .append(" AND c.population >= ")
+                    .append(countrySearchCriteria.getPopulation());
         }
-        if (page != null && page > 0) {
-            int offset = (page - 1) * limit;
-            defaultQuery = defaultQuery + " LIMIT " + limit + " OFFSET " + offset;
+        if (countrySearchCriteria.getPage() != null && countrySearchCriteria.getPage() > 0) {
+            int offset = (countrySearchCriteria.getPage() - 1) * countrySearchCriteria.getLimit();
+            stringBuilder
+                    .append(" LIMIT ")
+                    .append(countrySearchCriteria.getLimit())
+                    .append(" OFFSET ")
+                    .append(offset);
         }
-        return defaultQuery;
+        return stringBuilder.toString();
     }
 }
 

@@ -1,6 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.CityCriteria;
+import com.alexa.worldservice.entity.CitySearchCriteria;
 import com.alexa.worldservice.entity.SearchCity;
 import com.alexa.worldservice.mapper.SearchCityMapper;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ public class JdbcCityDao implements CityDao {
     }
 
     @Override
-    public List<SearchCity> searchCityByCriteria(CityCriteria cityCriteria) {
-        String criteriaCityQuery = getCityByCriteriaQuery(cityCriteria);
+    public List<SearchCity> searchCityByCriteria(CitySearchCriteria citySearchCriteria) {
+        String criteriaCityQuery = getCityByCriteriaQuery(citySearchCriteria);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -38,7 +38,7 @@ public class JdbcCityDao implements CityDao {
             ResultSet resultSet = statement.executeQuery(criteriaCityQuery);
             List<SearchCity> cities = new ArrayList<>();
             while (resultSet.next()) {
-                cities.add(CITY_MAPPER.mapRow(resultSet, cityCriteria));
+                cities.add(CITY_MAPPER.mapRow(resultSet, citySearchCriteria));
             }
             return cities;
         } catch (SQLException e) {
@@ -46,33 +46,33 @@ public class JdbcCityDao implements CityDao {
         }
     }
 
-    String getCityByCriteriaQuery(CityCriteria cityCriteria) {
+    String getCityByCriteriaQuery(CitySearchCriteria citySearchCriteria) {
 
-        String countryNamePlaceHolder = cityCriteria.isCountryRequired() ? ",cc.name as countryName " : "";
-        String populationPlaceHolder = cityCriteria.isPopulationRequired() ? ",c.population as population" : "";
-        String countryPopulationPlaceHolder = cityCriteria.isCountryPopulationRequired() ? ",cc.population as countryPopulation" : "";
+        String countryNamePlaceHolder = citySearchCriteria.isCountryRequired() ? ",cc.name as countryName " : "";
+        String populationPlaceHolder = citySearchCriteria.isPopulationRequired() ? ",c.population as population" : "";
+        String countryPopulationPlaceHolder = citySearchCriteria.isCountryPopulationRequired() ? ",cc.population as countryPopulation" : "";
 
         StringBuilder stringBuilder = new StringBuilder(
                 String.format(GET_CITY_BY_CRITERIA,
                         countryNamePlaceHolder,
                         populationPlaceHolder,
                         countryPopulationPlaceHolder));
-        if (cityCriteria.getCountry() != null) {
+        if (citySearchCriteria.getCountry() != null) {
             stringBuilder
-                    .append(" AND lower(cc.name) as country like '%")
-                    .append(cityCriteria.getCountry().toLowerCase())
+                    .append(" AND lower(cc.name) like '%")
+                    .append(citySearchCriteria.getCountry().toLowerCase())
                     .append("%'");
         }
-        if (cityCriteria.getName() != null) {
+        if (citySearchCriteria.getName() != null) {
             stringBuilder.
                     append( " AND lower(c.name) like '%" ).
-                    append( cityCriteria.getName().toLowerCase()).
+                    append( citySearchCriteria.getName().toLowerCase()).
                     append( "%'");
         }
-        if (cityCriteria.getContinent() != null) {
+        if (citySearchCriteria.getContinent() != null) {
             stringBuilder
                     .append(" AND lower(cc.continent) like '%" )
-                    .append( cityCriteria.getContinent().toLowerCase() )
+                    .append( citySearchCriteria.getContinent().toLowerCase() )
                     .append( "%'");
         }
 

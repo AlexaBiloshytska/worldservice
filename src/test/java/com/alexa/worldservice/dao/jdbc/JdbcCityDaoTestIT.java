@@ -1,5 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.entity.CitySearchCriteria;
 import com.alexa.worldservice.entity.SearchCity;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,9 +22,9 @@ public class JdbcCityDaoTestIT {
         config.setPassword("");
         config.setJdbcUrl("jdbc:h2:mem:test;INIT=runscript from 'classpath:init.sql'");
         config.setDriverClassName("org.h2.Driver");
-        config.addDataSourceProperty( "cachePrepStmts" , "true" );
-        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
-        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         dataSource = new HikariDataSource(config);
     }
 
@@ -31,12 +32,16 @@ public class JdbcCityDaoTestIT {
     public void searchCityByCriteria() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
-        String country = "al";
-        String name = "iv";
-        String continent= "Europe";
+        CitySearchCriteria citySearchCriteria = new CitySearchCriteria();
+        citySearchCriteria.setCountryRequired(true);
+        citySearchCriteria.setPopulationRequired(true);
+        citySearchCriteria.setCountryPopulationRequired(false);
 
+        citySearchCriteria.setCountry("al");
+        citySearchCriteria.setName("iv");
+        citySearchCriteria.setContinent("Europe");
 
-        List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(true,true, false, country,name,continent);
+        List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(citySearchCriteria);
 
         Assert.assertNotNull(cities);
 
