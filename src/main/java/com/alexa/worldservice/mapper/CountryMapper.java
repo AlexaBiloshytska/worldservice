@@ -21,6 +21,8 @@ public class CountryMapper {
         country.setLifeExpectancy(resultSet.getDouble("lifeexpectancy"));
         country.setGovernmentForm(resultSet.getString("governmentform"));
         country.setHeadOfState(resultSet.getString("headofstate"));
+        country.setCapital(resultSet.getString("capital_name"));
+        country.setCode2(resultSet.getString("code2"));
 
         return country;
     }

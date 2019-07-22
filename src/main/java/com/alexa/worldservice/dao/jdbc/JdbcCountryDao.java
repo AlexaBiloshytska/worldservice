@@ -57,8 +57,8 @@ public class JdbcCountryDao implements CountryDao {
             "governmentform," +
             "headofstate, " +
             "capital, " +
-            "code," +
-            "code2) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+            "code2," +
+            "code) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String UPDATE_COUNTRY = "UPDATE country set " +
             "name=?, " +
@@ -72,7 +72,7 @@ public class JdbcCountryDao implements CountryDao {
 
     private static final String DELETE_COUNTRY = "delete from country where name =?";
 
-    private static final String GET_COUNTRY_BY_ID = "select * from city where id =?";
+    private static final String GET_COUNTRY_BY_CODE = "select c.*, cy.name as capital_name from country c join city cy on (c.capital = cy.id) where code = ?";
 
     private DataSource dataSource;
 
@@ -179,8 +179,24 @@ public class JdbcCountryDao implements CountryDao {
         }
     }
 
+    @Override
+    public Country getCountryByCode(String code) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRY_BY_CODE)) {
 
-    private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
+            preparedStatement.setString(1, code);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return COUNTRY_MAPPER.mapRow(resultSet);
+            }
+
+        } catch (SQLException e) {
+           throw new RuntimeException("Unable to get country with code ",e);
+        }
+    }
+
+
+        private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
             capitalResultSet.next();
             int capitalId = capitalResultSet.getInt("id");
@@ -195,8 +211,8 @@ public class JdbcCountryDao implements CountryDao {
             preparedStatement.setString(8, country.getGovernmentForm());
             preparedStatement.setString(9, country.getHeadOfState());
             preparedStatement.setInt(10, capitalId);
-            preparedStatement.setString(11, country.getCode());
-            preparedStatement.setString(12, country.getCode2());
+            preparedStatement.setString(11, country.getCode2());
+            preparedStatement.setString(12, country.getCode());
             preparedStatement.execute();
         }
     }

@@ -71,8 +71,9 @@ public class JdbcCountryDaoTest {
 
     @Test
     public void add() {
-
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+
+        String code = "UKR";
         Country country = new Country();
         country.setName("Ukraine");
         country.setContinent("Erope");
@@ -88,10 +89,11 @@ public class JdbcCountryDaoTest {
         country.setCode2("UKR");
 
         jdbcCountryDao.add(country);
-        Assert.assertNotNull(country);
+
+        Country countryAfter = jdbcCountryDao.getCountryByCode(code);
+        Assert.assertEquals(country, countryAfter);
 
     }
-
 
     @Test
     public void delete() {
@@ -104,6 +106,8 @@ public class JdbcCountryDaoTest {
     public void update() {
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
 
+        Country countryBefore = jdbcCountryDao.getCountryByCode("ALB");
+
         Country country = new Country();
         country.setName("Ukraine");
         country.setContinent("Erope");
@@ -115,10 +119,13 @@ public class JdbcCountryDaoTest {
         country.setGovernmentForm("Republic");
         country.setHeadOfState("Volodymyr Zelemskyi");
         country.setCapital("Qandahar");
-        country.setCode("UKR");
+        country.setCode("ALB");
         country.setCode2("UKR");
 
         jdbcCountryDao.update(country);
-        Assert.assertNotNull(country);
+
+        Country countryAfter = jdbcCountryDao.getCountryByCode("ALB");
+        Assert.assertNotEquals(countryBefore, countryAfter);
+
     }
 }
