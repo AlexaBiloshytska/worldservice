@@ -1,7 +1,7 @@
 package com.alexa.worldservice.service;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.shelberg.entity.Country;
+import com.alexa.worldservice.entity.CountrySearchCriteria;
 import com.shelberg.entity.Country;
 
 import java.util.List;
@@ -19,7 +19,13 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public List<Country> getCountriesByLanguage(String language) { return countryDao.getCountriesByLanguage(language);
+    public List<Country> getCountriesByLanguage(String language) {
+        return countryDao.getCountriesByLanguage(language);
+    }
+
+    @Override
+    public List<Country> getCountriesByCriteria(CountrySearchCriteria countrySearchCriteria) {
+        return countryDao.searchByCriteria(countrySearchCriteria);
     }
 
 }

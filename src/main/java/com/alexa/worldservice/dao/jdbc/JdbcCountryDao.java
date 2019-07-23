@@ -1,6 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
+import com.alexa.worldservice.entity.CountrySearchCriteria;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
@@ -10,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +36,7 @@ public class JdbcCountryDao implements CountryDao {
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
+
     private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
             "c.continent,c.region,c.surfacearea," +
             "c.indepyear,c.population,c.lifeexpectancy,c.governmentform," +
@@ -45,6 +44,22 @@ public class JdbcCountryDao implements CountryDao {
             "join country_language as lang on lang.countrycode = c.code " +
             "left join city as t on t.id = c.capital " +
             "where lang.language = ?";
+
+    private static final String GET_COUNTRY_BY_CRITERIA = "select c.code," +
+            "c.name, " +
+            "c.continent, " +
+            "c.region, " +
+            "c.surfacearea, " +
+            "c.indepyear, " +
+            "c.headofstate, " +
+            "c.population, " +
+            "c.lifeexpectancy, " +
+            "c.governmentform," +
+            "t.name as capital, " +
+            "c.code2 " +
+            "from country as c " +
+            "left join city as t on t.id = c.capital " +
+            "where 1=1";
 
     private DataSource dataSource;
 
@@ -55,13 +70,13 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountry(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
-            logger.info("Getting data from SQL query: {} ", GET_LANGUAGE_STATISTICS);
+            logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
 
             preparedStatement.setString(1, name);
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(!resultSet.next()){
-                    logger.error("resultSet is empty");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
+                    logger.warn("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
 
@@ -86,7 +101,7 @@ public class JdbcCountryDao implements CountryDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE)) {
 
-            logger.info("Getting data from SQL query: {}", GET_COUNTRIES_BY_LANGUAGE);
+            logger.info("Getting data from SQL query {}: ", GET_COUNTRIES_BY_LANGUAGE);
             preparedStatement.setString(1, language);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -97,9 +112,57 @@ public class JdbcCountryDao implements CountryDao {
                 return countries;
             }
         } catch (SQLException e) {
-            logger.error("Unable to execute sql query: {}", GET_COUNTRIES_BY_LANGUAGE, e);
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
         }
+    }
+
+    @Override
+    public List<Country> searchByCriteria(CountrySearchCriteria countrySearchCriteria) {
+        String criteriaQuery = getCountryCriteriaQuery(countrySearchCriteria);
+
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            try (ResultSet resultSet = statement.executeQuery(criteriaQuery)) {
+                List<Country> countries = new ArrayList<>();
+                while (resultSet.next()) {
+                    countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+                }
+                return countries;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRY_BY_CRITERIA, e);
+        }
+    }
+
+    String getCountryCriteriaQuery(CountrySearchCriteria countrySearchCriteria) {
+        StringBuilder stringBuilder = new StringBuilder(GET_COUNTRY_BY_CRITERIA);
+        if (CountrySearchCriteria.class.getName() != null && !CountrySearchCriteria.class.getName().isEmpty()) {
+            stringBuilder
+                    .append(" AND lower(c.name) like '%")
+                    .append(countrySearchCriteria.getName().toLowerCase())
+                    .append("%'");
+        }
+        if (countrySearchCriteria.getContinent() != null && !countrySearchCriteria.getContinent().isEmpty()) {
+            stringBuilder
+                    .append(" AND lower(c.continent) = '")
+                    .append(countrySearchCriteria.getContinent().toLowerCase())
+                    .append("'");
+        }
+        if (countrySearchCriteria.getPopulation() != null && countrySearchCriteria.getPopulation() > 0) {
+            stringBuilder
+                    .append(" AND c.population >= ")
+                    .append(countrySearchCriteria.getPopulation());
+        }
+        if (countrySearchCriteria.getPage() != null && countrySearchCriteria.getPage() > 0) {
+            int offset = (countrySearchCriteria.getPage() - 1) * countrySearchCriteria.getLimit();
+            stringBuilder
+                    .append(" LIMIT ")
+                    .append(countrySearchCriteria.getLimit())
+                    .append(" OFFSET ")
+                    .append(offset);
+        }
+        return stringBuilder.toString();
     }
 }
 

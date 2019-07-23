@@ -20,8 +20,9 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
-    private CountryService countryService = ServiceLocator.get(CountryService.class);
+
+    private final XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
+    private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
