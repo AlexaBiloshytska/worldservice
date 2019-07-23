@@ -1,5 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.exception.NoDataFoundException;
 import com.shelberg.entity.Country;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -95,11 +96,14 @@ public class JdbcCountryDaoTest {
 
     }
 
-    @Test
+    @Test(expected = NoDataFoundException.class)
     public void delete() {
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-        String name = "Aruba";
-        jdbcCountryDao.delete(name);
+        String code = "ABW";
+        Country country = jdbcCountryDao.getCountryByCode(code);
+        Assert.assertNotNull(country);
+        jdbcCountryDao.delete(code);
+        jdbcCountryDao.getCountryByCode(code);
     }
 
     @Test

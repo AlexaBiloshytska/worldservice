@@ -17,14 +17,11 @@ public class DeleteCountryServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
-
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
+        String code = request.getParameter("code");
 
-        countryService.delete(name);
-        logger.info("Country is successfully deleted");
+        countryService.delete(code);
+        logger.info("Country with code: {} is successfully deleted", code);
     }
-
-
 }

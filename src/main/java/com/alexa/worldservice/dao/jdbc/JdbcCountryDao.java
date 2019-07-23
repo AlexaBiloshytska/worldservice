@@ -70,9 +70,9 @@ public class JdbcCountryDao implements CountryDao {
             "lifeexpectancy=?, " +
             "governmentform=?,headofstate = ?,capital =?, code2 =? where code =?";
 
-    private static final String DELETE_COUNTRY = "delete from country where name =?";
+    private static final String DELETE_COUNTRY_BY_CODE = "delete from country where code =?";
 
-    private static final String GET_COUNTRY_BY_CODE = "select c.*, cy.name as capital_name from country c join city cy on (c.capital = cy.id) where code = ?";
+    private static final String GET_COUNTRY_BY_CODE = "select c.*, cy.name as capital_name from country c left join city cy on (c.capital = cy.id) where code = ?";
 
     private DataSource dataSource;
 
@@ -149,16 +149,18 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void delete(String name) {
+    public void delete(String code) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COUNTRY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COUNTRY_BY_CODE)) {
 
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, code);
 
-            logger.info("Deleting country with name {}", name);
+            preparedStatement.executeUpdate();
+
+            logger.info("Deleting country with name {}", code);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+           throw new RuntimeException("Unable to delete country",e);
         }
 
     }
@@ -186,7 +188,10 @@ public class JdbcCountryDao implements CountryDao {
 
             preparedStatement.setString(1, code);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                resultSet.next();
+                if (!resultSet.next()) {
+                    logger.error("resultSet is empty");
+                    throw new NoDataFoundException("Non-empty resultSet expected");
+                }
                 return COUNTRY_MAPPER.mapRow(resultSet);
             }
 

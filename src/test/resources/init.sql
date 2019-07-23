@@ -31,7 +31,7 @@ create table country
 create table country_language
 (
   countrycode char(20) default  not null
-      references country,
+      references country ON DELETE CASCADE,
   language    char(50)  not null,
   isofficial  boolean  default false      not null,
   percentage  real     not null,
