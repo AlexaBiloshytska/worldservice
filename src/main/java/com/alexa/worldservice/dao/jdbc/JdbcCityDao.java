@@ -35,12 +35,13 @@ public class JdbcCityDao implements CityDao {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery(criteriaCityQuery);
-            List<SearchCity> cities = new ArrayList<>();
-            while (resultSet.next()) {
-                cities.add(CITY_MAPPER.mapRow(resultSet, citySearchCriteria));
+            try(ResultSet resultSet = statement.executeQuery(criteriaCityQuery)){
+                List<SearchCity> cities = new ArrayList<>();
+                while (resultSet.next()) {
+                    cities.add(CITY_MAPPER.mapRow(resultSet, citySearchCriteria));
+                }
+                return cities;
             }
-            return cities;
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query:" + GET_CITY_BY_CRITERIA, e);
         }
