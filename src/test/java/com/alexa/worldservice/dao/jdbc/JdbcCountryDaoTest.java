@@ -20,7 +20,7 @@ public class JdbcCountryDaoTest {
         countrySearchCriteria.setName("ang");
         countrySearchCriteria.setContinent("Europe");
         countrySearchCriteria.setPopulation(100);
-        countrySearchCriteria.setPage(2);
+        countrySearchCriteria.setPage(1);
         countrySearchCriteria.setLimit(5);
 
         String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery(countrySearchCriteria);

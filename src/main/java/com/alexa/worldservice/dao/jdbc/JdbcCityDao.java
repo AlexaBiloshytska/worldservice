@@ -1,8 +1,8 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.entity.CitySearchCriteria;
-import com.alexa.worldservice.entity.SearchCity;
 import com.alexa.worldservice.mapper.SearchCityMapper;
+import com.shelberg.entity.SearchCity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,9 +3,9 @@ package com.alexa.worldservice.servlet;
 import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.entity.CitySearchCriteria;
-import com.alexa.worldservice.entity.SearchCity;
 import com.alexa.worldservice.service.CityService;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.shelberg.entity.SearchCity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

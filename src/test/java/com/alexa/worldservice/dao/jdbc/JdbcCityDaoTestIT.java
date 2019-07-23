@@ -1,7 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.entity.CitySearchCriteria;
-import com.alexa.worldservice.entity.SearchCity;
+import com.shelberg.entity.SearchCity;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;

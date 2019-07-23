@@ -1,7 +1,7 @@
 package com.alexa.worldservice.mapper;
 
 import com.alexa.worldservice.entity.CitySearchCriteria;
-import com.alexa.worldservice.entity.SearchCity;
+import com.shelberg.entity.SearchCity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,10 +16,10 @@ public class SearchCityMapper {
             city.setCountryName(resultSet.getString("countryName"));
         }
         if (citySearchCriteria.isPopulationRequired()) {
-            city.setPopulation(resultSet.getInt("population"));
+            city.setPopulation(resultSet.getLong("population"));
         }
         if (citySearchCriteria.isCountryPopulationRequired()) {
-            city.setCountryPopulation(resultSet.getInt("countryPopulation"));
+            city.setCountryPopulation(resultSet.getLong("countryPopulation"));
         }
         return city;
     }

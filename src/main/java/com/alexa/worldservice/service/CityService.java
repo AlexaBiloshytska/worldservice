@@ -1,7 +1,7 @@
 package com.alexa.worldservice.service;
 
 import com.alexa.worldservice.entity.CitySearchCriteria;
-import com.alexa.worldservice.entity.SearchCity;
+import com.shelberg.entity.SearchCity;
 
 import java.util.List;
 

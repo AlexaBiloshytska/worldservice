@@ -1,7 +1,7 @@
 package com.alexa.worldservice.mapper;
 
 import com.alexa.worldservice.entity.CitySearchCriteria;
-import com.alexa.worldservice.entity.SearchCity;
+import com.shelberg.entity.SearchCity;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
@@ -31,7 +31,5 @@ public class SearchCityMapperTest {
         Assert.assertEquals("Ukraine", city.getCountryName());
         Assert.assertEquals(1111,city.getPopulation(), 0000);
         Assert.assertEquals(2222,city.getCountryPopulation(), 0000);
-
-
     }
 }
