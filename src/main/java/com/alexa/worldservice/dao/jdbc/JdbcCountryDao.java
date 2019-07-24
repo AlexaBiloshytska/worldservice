@@ -31,20 +31,22 @@ public class JdbcCountryDao implements CountryDao {
             "c.lifeexpectancy, " +
             "c.governmentform, " +
             "c.headofstate, " +
-            "c.capital " +
-            "c.code" +
+            "c.capital, " +
+            "c.code, " +
+            "c.code2 " +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
             "where c.name = ?";
     private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
             "c.continent,c.region,c.surfacearea," +
             "c.indepyear,c.population,c.lifeexpectancy,c.governmentform," +
-            "c.headofstate,t.name as capital  from country as c " +
+            "c.headofstate,t.name as capital, c.code2  from country as c " +
             "join country_language as lang on lang.countrycode = c.code " +
             "left join city as t on t.id = c.capital " +
             "where lang.language = ?";
 
-    private static final String ADD_COUNTRY = "INSERT INTO country (name," +
+    private static final String ADD_COUNTRY =
+            "INSERT INTO country (name," +
             "continent," +
             "region," +
             "surfacearea," +
@@ -55,7 +57,7 @@ public class JdbcCountryDao implements CountryDao {
             "headofstate, " +
             "capital, " +
             "code2," +
-            "code) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+            "code) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String UPDATE_COUNTRY = "UPDATE country set " +
             "name=?, " +
@@ -69,7 +71,7 @@ public class JdbcCountryDao implements CountryDao {
 
     private static final String DELETE_COUNTRY_BY_CODE = "delete from country where code =?";
 
-    private static final String GET_COUNTRY_BY_CODE = "select c.*, cy.name as capital_name from country c " +
+    private static final String GET_COUNTRY_BY_CODE = "select cy.name as capital, c.*  from country c " +
             "left join city cy on (c.capital = cy.id) where code = ?";
 
     private DataSource dataSource;
@@ -132,7 +134,7 @@ public class JdbcCountryDao implements CountryDao {
     public void add(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
-             PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             capitalStatement.setString(1, country.getCapital());
 
@@ -215,14 +217,7 @@ public class JdbcCountryDao implements CountryDao {
             preparedStatement.setInt(10, capitalId);
             preparedStatement.setString(11, country.getCode2());
             preparedStatement.setString(12, country.getCode());
-            preparedStatement.executeUpdate();
-
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-
-            while (generatedKeys.next()) {
-                generatedKeys.getString("code");
-                
-            }
+            preparedStatement.execute();
         }
     }
 }

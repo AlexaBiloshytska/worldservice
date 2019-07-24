@@ -62,7 +62,7 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
         Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 0.00);
         Assert.assertEquals(1912,(int) countries.get(0).getIndepYear());
-        Assert.assertEquals(300000, (int)countries.get(0).getPopulation());
+        Assert.assertEquals(3401200, (int)countries.get(0).getPopulation());
         Assert.assertEquals(71.5999984741211, countries.get(0).getLifeExpectancy(), 0.00);
         Assert.assertEquals("Republic", countries.get(0).getGovernmentForm());
         Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
@@ -86,7 +86,7 @@ public class JdbcCountryDaoTest {
         country.setGovernmentForm("Republic");
         country.setHeadOfState("Volodymyr Zelemskyi");
         country.setCapital("Qandahar");
-        country.setCode("UKR");
+        country.setCode(code);
         country.setCode2("UKR");
 
         jdbcCountryDao.add(country);
