@@ -23,6 +23,7 @@ public class CountryMapper {
         country.setHeadOfState(resultSet.getString("headofstate"));
         country.setCapital(resultSet.getString("capital_name"));
         country.setCode2(resultSet.getString("code2"));
+        country.setCode(resultSet.getString("code"));
 
         return country;
     }

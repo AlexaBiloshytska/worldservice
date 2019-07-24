@@ -40,7 +40,7 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Africa", country.getContinent());
         Assert.assertEquals("Central Africa", country.getRegion());
         Assert.assertEquals(1246700.0, country.getSurfaceArea(), 0.01);
-        Assert.assertEquals(12878000, country.getPopulation());
+        Assert.assertEquals(12878000,(int) country.getPopulation());
         Assert.assertNotEquals(0, country.getLanguageList().size());
 
     }
@@ -61,8 +61,8 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Europe", countries.get(0).getContinent());
         Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
         Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 0.00);
-        Assert.assertEquals(1912, countries.get(0).getIndepYear());
-        Assert.assertEquals(3401200, countries.get(0).getPopulation());
+        Assert.assertEquals(1912,(int) countries.get(0).getIndepYear());
+        Assert.assertEquals(300000, (int)countries.get(0).getPopulation());
         Assert.assertEquals(71.5999984741211, countries.get(0).getLifeExpectancy(), 0.00);
         Assert.assertEquals("Republic", countries.get(0).getGovernmentForm());
         Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
@@ -109,7 +109,6 @@ public class JdbcCountryDaoTest {
     @Test
     public void update() {
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-
         Country countryBefore = jdbcCountryDao.getCountryByCode("ALB");
 
         Country country = new Country();
@@ -123,8 +122,8 @@ public class JdbcCountryDaoTest {
         country.setGovernmentForm("Republic");
         country.setHeadOfState("Volodymyr Zelemskyi");
         country.setCapital("Qandahar");
-        country.setCode("ALB");
         country.setCode2("UKR");
+        country.setCode("ALB");
 
         jdbcCountryDao.update(country);
 

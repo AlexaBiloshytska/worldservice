@@ -169,13 +169,12 @@ public class JdbcCountryDao implements CountryDao {
     public void update(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COUNTRY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COUNTRY, new String[]{"code"})) {
 
             capitalStatement.setString(1, country.getCapital());
 
             countryProcessing(country, capitalStatement, preparedStatement);
             logger.info("Country is successfully updated {}", country);
-
         } catch (SQLException e) {
             throw new RuntimeException("Unable to update country", e);
         }

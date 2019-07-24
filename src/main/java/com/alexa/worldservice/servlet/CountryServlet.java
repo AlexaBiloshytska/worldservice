@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import com.shelberg.entity.Views.*;
 
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
@@ -71,6 +70,14 @@ public class CountryServlet extends HttpServlet {
 
         countryService.update(country);
         logger.info("Country is successfully updated {}", country);
+    }
+
+    @Override
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String code = request.getParameter("code");
+
+        countryService.delete(code);
+        logger.info("Country with code: {} is successfully deleted", code);
     }
 }
 
