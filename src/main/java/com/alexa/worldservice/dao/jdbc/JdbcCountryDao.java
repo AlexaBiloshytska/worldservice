@@ -10,10 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +69,8 @@ public class JdbcCountryDao implements CountryDao {
 
     private static final String DELETE_COUNTRY_BY_CODE = "delete from country where code =?";
 
-    private static final String GET_COUNTRY_BY_CODE = "select c.*, cy.name as capital_name from country c left join city cy on (c.capital = cy.id) where code = ?";
+    private static final String GET_COUNTRY_BY_CODE = "select c.*, cy.name as capital_name from country c " +
+            "left join city cy on (c.capital = cy.id) where code = ?";
 
     private DataSource dataSource;
 
@@ -160,7 +158,7 @@ public class JdbcCountryDao implements CountryDao {
             logger.info("Deleting country with name {}", code);
 
         } catch (SQLException e) {
-           throw new RuntimeException("Unable to delete country",e);
+            throw new RuntimeException("Unable to delete country", e);
         }
 
     }
@@ -195,12 +193,12 @@ public class JdbcCountryDao implements CountryDao {
             }
 
         } catch (SQLException e) {
-           throw new RuntimeException("Unable to get country with code ",e);
+            throw new RuntimeException("Unable to get country with code ", e);
         }
     }
 
 
-        private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
+    private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
             capitalResultSet.next();
             int capitalId = capitalResultSet.getInt("id");
@@ -217,9 +215,14 @@ public class JdbcCountryDao implements CountryDao {
             preparedStatement.setInt(10, capitalId);
             preparedStatement.setString(11, country.getCode2());
             preparedStatement.setString(12, country.getCode());
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+
+            while (generatedKeys.next()) {
+                generatedKeys.getString("code");
+                
+            }
         }
     }
 }
-
-
