@@ -86,16 +86,6 @@ public class CountryServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private String getRequestBody(HttpServletRequest request) throws IOException {
-        StringBuilder buffer = new StringBuilder();
-        BufferedReader reader = request.getReader();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            buffer.append(line);
-        }
-        return buffer.toString();
-    }
-
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String code = request.getParameter("code");
@@ -108,6 +98,15 @@ public class CountryServlet extends HttpServlet {
             logger.info("Country with code: {} is successfully deleted", code);
             response.setStatus(HttpServletResponse.SC_OK);
         }
+    }
+    private String getRequestBody(HttpServletRequest request) throws IOException {
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = request.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            buffer.append(line);
+        }
+        return buffer.toString();
     }
 }
 
