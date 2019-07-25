@@ -59,7 +59,7 @@ public class CityServlet extends HttpServlet {
         cityService.add(city);
         logger.info("City is successfully added {}", city);
 
-
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -68,6 +68,8 @@ public class CityServlet extends HttpServlet {
 
         cityService.delete(id);
         logger.info("City with id {} is successfully deleted", id);
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -78,6 +80,8 @@ public class CityServlet extends HttpServlet {
 
         cityService.update(city);
         logger.info("City is successfully updated {}", city);
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     private String getRequestBody(HttpServletRequest request) throws IOException {
