@@ -37,11 +37,11 @@ public class CountryServlet extends HttpServlet {
 
         logger.info("Getting country with country name {} ", countryName);
 
-        if (acceptType.contains(MimeType.APPLICATION_JSON.getValue())) {
+        if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             try {
                 Country country = countryService.getCountry(countryName);
                 String xml = xmlMapper.writerWithView(CountryStatistic.class).writeValueAsString(country);
-                response.setContentType(MimeType.APPLICATION_JSON.getValue());
+                response.setContentType(MimeType.APPLICATION_XML.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(xml);
