@@ -1,15 +1,21 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.City;
-import com.alexa.worldservice.entity.SearchCity;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.mapper.CityMapper;
 import com.alexa.worldservice.mapper.SearchCityMapper;
+import com.alexa.worldservice.mapper.SearchCityMapper;
+import com.shelberg.entity.City;
+import com.shelberg.entity.SearchCity;
+import com.shelberg.search.CitySearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,56 +45,56 @@ public class JdbcCityDao implements CityDao {
     }
 
     @Override
-    public List<SearchCity> searchCityByCriteria(boolean countryRequired, boolean populationRequired, boolean countryPopulationRequired, String country,
-                                                 String name, String continent) {
-        String criteriaCityQuery = getCityByCriteriaQuery(countryRequired,
-                populationRequired,
-                countryPopulationRequired,
-                country,
-                name,
-                continent);
+    public List<SearchCity> searchCityByCriteria(CitySearchQuery citySearchQuery) {
+        String getCityQuery = getCityByCriteriaQuery(citySearchQuery);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery(criteriaCityQuery);
-            List<SearchCity> cities = new ArrayList<>();
-            while (resultSet.next()) {
-                cities.add(SEARCH_CITY_MAPPER.mapRow(resultSet, countryRequired, populationRequired, countryPopulationRequired));
+            try(ResultSet resultSet = statement.executeQuery(getCityQuery)){
+                List<SearchCity> cities = new ArrayList<>();
+                while (resultSet.next()) {
+                    cities.add(SEARCH_CITY_MAPPER.mapRow(resultSet, citySearchQuery));
+                }
+                return cities;
             }
-            return cities;
-
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to execute sql query: {}" + GET_CITY_BY_CRITERIA, e);
+            throw new RuntimeException("Unable to execute sql query:" + GET_CITY_BY_CRITERIA, e);
         }
     }
 
-    String getCityByCriteriaQuery(boolean countryRequired,
-                                  boolean populationRequired,
-                                  boolean countryPopulationRequired,
-                                  String country,
-                                  String name,
-                                  String continent) {
-        String defaultQuery = GET_CITY_BY_CRITERIA;
+    String getCityByCriteriaQuery(CitySearchQuery citySearchQuery) {
+        String countryNamePlaceHolder = citySearchQuery.isCountryRequired() ? ",cc.name as countryName " : "";
+        String populationPlaceHolder = citySearchQuery.isPopulationRequired() ? ",c.population as population" : "";
+        String countryPopulationPlaceHolder = citySearchQuery.isCountryPopulationRequired() ? ",cc.population as countryPopulation" : "";
 
-        String countryNamePlaceHolder = countryRequired ? ",cc.name as countryName " : "";
-        String populationPlaceHolder = populationRequired ? ",c.population as population" : "";
-        String countryPopulationPlaceHolder = countryPopulationRequired ? ",cc.population as countryPopulation" : "";
-
-        defaultQuery = String.format(defaultQuery, countryNamePlaceHolder, populationPlaceHolder, countryPopulationPlaceHolder);
-
-        if (country != null) {
-            defaultQuery = defaultQuery + " AND lower(cc.name) like '%" + country.toLowerCase() + "%'";
+        StringBuilder stringBuilder = new StringBuilder(
+                String.format(GET_CITY_BY_CRITERIA,
+                        countryNamePlaceHolder,
+                        populationPlaceHolder,
+                        countryPopulationPlaceHolder));
+        if (citySearchQuery.getCountry() != null) {
+            stringBuilder
+                    .append(" AND lower(cc.name) like '%")
+                    .append(citySearchQuery.getCountry().toLowerCase())
+                    .append("%'");
         }
-        if (name != null) {
-            defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
+        if (citySearchQuery.getName() != null) {
+            stringBuilder.
+                    append( " AND lower(c.name) like '%" ).
+                    append( citySearchQuery.getName().toLowerCase()).
+                    append( "%'");
         }
-        if (continent != null) {
-            defaultQuery = defaultQuery + " AND lower(cc.continent) like '%" + continent.toLowerCase() + "%'";
+        if (citySearchQuery.getContinent() != null) {
+            stringBuilder
+                    .append(" AND lower(cc.continent) like '%" )
+                    .append( citySearchQuery.getContinent().toLowerCase() )
+                    .append( "%'");
         }
-        logger.info("Getting the query with additional parameters: {}", defaultQuery);
 
-        return defaultQuery;
+        logger.info("Getting the query with additional parameters: {}", stringBuilder.toString());
+
+        return stringBuilder.toString();
     }
 
     @Override

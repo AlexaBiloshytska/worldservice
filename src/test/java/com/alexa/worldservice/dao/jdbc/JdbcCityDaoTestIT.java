@@ -1,25 +1,28 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.City;
-import com.alexa.worldservice.entity.SearchCity;
 import com.alexa.worldservice.exception.NoDataFoundException;
+import com.shelberg.entity.City;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
 import org.junit.Before;
+import com.shelberg.entity.SearchCity;
+import com.shelberg.search.CitySearchQuery;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 public class JdbcCityDaoTestIT {
+    private static HikariConfig config = new HikariConfig();
     private static HikariDataSource dataSource;
 
-    @Before
-    public void setup() {
-        HikariConfig config = new HikariConfig();
+    @BeforeClass
+    public static void setup() {
         config.setUsername("sa");
         config.setPassword("");
         config.setJdbcUrl("jdbc:h2:mem:test;INIT=runscript from 'classpath:init.sql'");
@@ -34,10 +37,17 @@ public class JdbcCityDaoTestIT {
     public void searchCityByCriteria() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
+        CitySearchQuery citySearchQuery = new CitySearchQuery.Builder("a1", "iv", "Europe")
+                .countryRequired(true)
+                .populationRequired(true)
+                .countryPopulationRequired(false).build();
+
+        List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(citySearchQuery);
+
+        Assert.assertNotNull(cities);
         String country = "al";
         String name = "iv";
         String continent = "Europe";
-        List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(true, true, false, country, name, continent);
 
         Assert.assertNotNull(cities);
     }

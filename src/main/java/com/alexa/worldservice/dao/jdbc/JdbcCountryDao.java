@@ -6,6 +6,7 @@ import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Language;
+import com.shelberg.search.CountrySearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,13 +70,13 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountry(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
-            logger.info("Getting data from SQL query: ", GET_LANGUAGE_STATISTICS);
+            logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
 
             preparedStatement.setString(1, name);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {
-                    logger.error("resultSet is empty");
+                    logger.warn("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
 
@@ -111,45 +112,58 @@ public class JdbcCountryDao implements CountryDao {
                 return countries;
             }
         } catch (SQLException e) {
+            logger.error("Unable to execute sql query: {}", GET_COUNTRIES_BY_LANGUAGE, e);
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
         }
     }
 
     @Override
-    public List<Country> searchByCriteria(String name, String continent, Integer population, Integer page, Integer limit) {
-        String criteriaQuery = getCountryCriteriaQuery(name, continent, population, page, limit);
+    public List<Country> searchByCriteria(CountrySearchQuery countrySearchQuery) {
+        String criteriaQuery = getCountryCriteriaQuery(countrySearchQuery);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery(criteriaQuery);
-            List<Country> countries = new ArrayList<>();
-            while (resultSet.next()) {
-                countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+            try (ResultSet resultSet = statement.executeQuery(criteriaQuery)) {
+                List<Country> countries = new ArrayList<>();
+                while (resultSet.next()) {
+                    countries.add(COUNTRY_MAPPER.mapRow(resultSet));
+                }
+                return countries;
             }
-            return countries;
-
         } catch (SQLException e) {
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRY_BY_CRITERIA, e);
         }
     }
 
-    String getCountryCriteriaQuery(String name, String continent, Integer population, Integer page, Integer limit) {
-        String defaultQuery = GET_COUNTRY_BY_CRITERIA;
-        if (name != null && !name.isEmpty()) {
-            defaultQuery = defaultQuery + " AND lower(c.name) like '%" + name.toLowerCase() + "%'";
+    String getCountryCriteriaQuery(CountrySearchQuery countrySearchQuery) {
+        StringBuilder stringBuilder = new StringBuilder(GET_COUNTRY_BY_CRITERIA);
+        if (countrySearchQuery.getName() != null && !countrySearchQuery.getName().isEmpty()) {
+            stringBuilder
+                    .append(" AND lower(c.name) like '%")
+                    .append(countrySearchQuery.getName().toLowerCase())
+                    .append("%'");
         }
-        if (continent != null && !continent.isEmpty()) {
-            defaultQuery = defaultQuery + " AND lower(c.continent) = '" + continent.toLowerCase() + "'";
+        if (countrySearchQuery.getContinent() != null && !countrySearchQuery.getContinent().isEmpty()) {
+            stringBuilder
+                    .append(" AND lower(c.continent) = '")
+                    .append(countrySearchQuery.getContinent().toLowerCase())
+                    .append("'");
         }
-        if (population != null && population > 0) {
-            defaultQuery = defaultQuery + " AND c.population >= " + population + "";
+        if (countrySearchQuery.getPopulation() != null && countrySearchQuery.getPopulation() > 0) {
+            stringBuilder
+                    .append(" AND c.population >= ")
+                    .append(countrySearchQuery.getPopulation());
         }
-        if (page != null && page > 0) {
-            int offset = (page - 1) * limit;
-            defaultQuery = defaultQuery + " LIMIT " + limit + " OFFSET " + offset;
+        if (countrySearchQuery.getPage() != null && countrySearchQuery.getPage() > 0) {
+            int offset = (countrySearchQuery.getPage() - 1) * countrySearchQuery.getLimit();
+            stringBuilder
+                    .append(" LIMIT ")
+                    .append(countrySearchQuery.getLimit())
+                    .append(" OFFSET ")
+                    .append(offset);
         }
-        return defaultQuery;
+        return stringBuilder.toString();
     }
 }
 

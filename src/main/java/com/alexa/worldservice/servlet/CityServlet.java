@@ -2,11 +2,11 @@ package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
-import com.alexa.worldservice.entity.City;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.service.CityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.shelberg.entity.City;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Views;
 import org.slf4j.Logger;

@@ -1,6 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.shelberg.entity.Country;
+import com.shelberg.search.CountrySearchQuery;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
@@ -8,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
+
 
 public class JdbcCountryDaoIT {
     private static HikariConfig config = new HikariConfig();
@@ -36,12 +38,11 @@ public class JdbcCountryDaoIT {
 
         Assert.assertEquals("AGO", country.getCode());
         Assert.assertEquals("Angola", country.getName());
-        Assert.assertEquals("Africa", country.getContinent());
+        Assert.assertEquals("Europe", country.getContinent());
         Assert.assertEquals("Central Africa", country.getRegion());
-        Assert.assertEquals(1246700.0, country.getSurfaceArea(), 0.01);
+        Assert.assertEquals(1246700.0, country.getSurfaceArea(), 1);
         Assert.assertEquals(12878000, (int)country.getPopulation());
         Assert.assertNotEquals(0, country.getLanguageList().size());
-
     }
 
 
@@ -72,12 +73,19 @@ public class JdbcCountryDaoIT {
     @Test
     public void searchByCriteria() {
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+
+        int population = 100;
+        int page = 1;
+        int limit = 5;
         String name = "ang";
         String continent = "Europe";
-        Integer population = 100;
-        Integer page = 2;
-        Integer limit = 5;
-        List<Country> countries = jdbcCountryDao.searchByCriteria(name, continent, population, page, limit);
+        CountrySearchQuery countrySearchQuery = new CountrySearchQuery.Builder(name, continent)
+                .setPopulation(population)
+                .setLimit(limit)
+                .setPage(page)
+                .build();
+
+        List<Country> countries = jdbcCountryDao.searchByCriteria(countrySearchQuery);
 
         Assert.assertNotNull(countries);
         Assert.assertEquals(2, countries.size());

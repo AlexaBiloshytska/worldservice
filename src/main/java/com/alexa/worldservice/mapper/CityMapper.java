@@ -1,6 +1,7 @@
 package com.alexa.worldservice.mapper;
 
-import com.alexa.worldservice.entity.City;
+
+import com.shelberg.entity.City;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
