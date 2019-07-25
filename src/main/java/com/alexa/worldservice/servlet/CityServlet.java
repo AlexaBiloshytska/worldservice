@@ -29,7 +29,8 @@ public class CityServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
-        int id = request.getIntHeader("id");
+
+        int id = Integer.parseInt(request.getParameter("id"));
         String acceptType = request.getHeaders("Accept").nextElement();
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
@@ -71,10 +72,8 @@ public class CityServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-        int id = request.getIntHeader("id");
+        int id = Integer.parseInt(request.getParameter("id"));
 
-        City city = new City();
-        city.setId(id);
         cityService.delete(id);
         logger.info("City with id {} is successfully deleted", id);
     }
