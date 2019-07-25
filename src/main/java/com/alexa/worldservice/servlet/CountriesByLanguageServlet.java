@@ -31,7 +31,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
         logger.info("Getting country with language {} ", language);
         String acceptType = request.getHeader("Accept");
 
-        if (acceptType.contains(MimeType.APPLICATION_JSON.getValue())) {
+        if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<Country> countries = countryService.getCountriesByLanguage(language);
             String json = mapper.writerWithView(CountryData.class).writeValueAsString(countries);
             response.setContentType(MimeType.APPLICATION_JSON.getValue());
