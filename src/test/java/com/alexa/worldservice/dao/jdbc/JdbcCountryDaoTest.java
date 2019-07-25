@@ -1,15 +1,53 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.exception.NoDataFoundException;
+import com.shelberg.entity.Country;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import com.shelberg.search.CountrySearchQuery;
 import org.junit.Test;
 import org.mockito.Mock;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public class JdbcCountryDaoTest {
+    private static HikariConfig config = new HikariConfig();
+    private static HikariDataSource dataSource;
 
-    @Mock
-    private DataSource dataSource;
+    @BeforeClass
+    public static void setup() {
+        config.setUsername("sa");
+        config.setPassword("");
+        config.setJdbcUrl("jdbc:h2:mem:test;INIT=runscript from 'classpath:init.sql'");
+        config.setDriverClassName("org.h2.Driver");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        dataSource = new HikariDataSource(config);
+    }
+
+    @Test
+    public void getStatistics() {
+        // Prepare
+        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+        String countryName = "Angola";
+
+        // Execute
+        Country country = jdbcCountryDao.getCountry(countryName);
+
+        Assert.assertEquals("AGO", country.getCode());
+        Assert.assertEquals("Angola", country.getName());
+        Assert.assertEquals("Europe", country.getContinent());
+        Assert.assertEquals("Central Africa", country.getRegion());
+        Assert.assertEquals(1246700.0, country.getSurfaceArea(), 0.01);
+        Assert.assertEquals(12878000,(int) country.getPopulation());
+        Assert.assertNotEquals(0, country.getLanguageList().size());
+
+    }
+
 
     @Test
     public void searchByName() {
@@ -25,8 +63,88 @@ public class JdbcCountryDaoTest {
                 .setLimit(limit)
                 .setPage(page)
                 .build();
+        String language = "Chichewa";
+
+        List<Country> countries = jdbcCountryDao.getCountriesByLanguage(language);
+
+        Assert.assertNotNull(countries);
+
+        Assert.assertEquals(1, countries.size());
+        Assert.assertEquals("ALB", countries.get(0).getCode());
+        Assert.assertEquals("Albania", countries.get(0).getName());
+        Assert.assertEquals("Europe", countries.get(0).getContinent());
+        Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
+        Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 0.00);
+        Assert.assertEquals(1912,(int) countries.get(0).getIndepYear());
+        Assert.assertEquals(3401200, (int)countries.get(0).getPopulation());
+        Assert.assertEquals(71.5999984741211, countries.get(0).getLifeExpectancy(), 0.00);
+        Assert.assertEquals("Republic", countries.get(0).getGovernmentForm());
+        Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
+        Assert.assertEquals("Tirana", countries.get(0).getCapital());
 
         String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery(countrySearchQuery);
         System.out.println(countryCriteriaQuery);
+    }
+
+    @Test
+    public void add() {
+        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+
+        String code = "UKR";
+        Country country = new Country();
+        country.setName("Ukraine");
+        country.setContinent("Europe");
+        country.setRegion("Central Europe");
+        country.setSurfaceArea(300.00);
+        country.setIndepYear(1991);
+        country.setPopulation(10000);
+        country.setLifeExpectancy(75.00);
+        country.setGovernmentForm("Republic");
+        country.setHeadOfState("Volodymyr Zelemskyi");
+        country.setCapital("Qandahar");
+        country.setCode(code);
+        country.setCode2("UKR");
+
+        jdbcCountryDao.add(country);
+
+        Country countryAfter = jdbcCountryDao.getCountryByCode(code);
+        Assert.assertEquals(country, countryAfter);
+
+    }
+
+    @Test(expected = NoDataFoundException.class)
+    public void delete() {
+        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+        String code = "ABW";
+        Country country = jdbcCountryDao.getCountryByCode(code);
+        Assert.assertNotNull(country);
+        jdbcCountryDao.delete(code);
+        jdbcCountryDao.getCountryByCode(code);
+    }
+
+    @Test
+    public void update() {
+        JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
+        Country countryBefore = jdbcCountryDao.getCountryByCode("ALB");
+
+        Country country = new Country();
+        country.setName("Ukraine");
+        country.setContinent("Erope");
+        country.setRegion("Central Europe");
+        country.setSurfaceArea(300.00);
+        country.setIndepYear(1991);
+        country.setPopulation(10000);
+        country.setLifeExpectancy(75.00);
+        country.setGovernmentForm("Republic");
+        country.setHeadOfState("Volodymyr Zelemskyi");
+        country.setCapital("Qandahar");
+        country.setCode2("UKR");
+        country.setCode("ALB");
+
+        jdbcCountryDao.update(country);
+
+        Country countryAfter = jdbcCountryDao.getCountryByCode("ALB");
+        Assert.assertNotEquals(countryBefore, countryAfter);
+
     }
 }

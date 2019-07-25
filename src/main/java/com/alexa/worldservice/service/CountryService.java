@@ -7,6 +7,13 @@ import java.util.List;
 
 public interface CountryService {
     Country getCountry(String name);
+
     List<Country> getCountriesByLanguage(String language);
+
+    void add(Country country);
+
+    int delete(String name);
+
+    int update(Country country);
     List<Country> getCountriesByCriteria(CountrySearchQuery countrySearchQuery);
 }

@@ -22,6 +22,8 @@ public class CountryMapper {
         country.setGovernmentForm(resultSet.getString("governmentform"));
         country.setHeadOfState(resultSet.getString("headofstate"));
         country.setCapital(resultSet.getString("capital"));
+        country.setCode2(resultSet.getString("code2"));
+        country.setCode(resultSet.getString("code"));
 
         return country;
     }

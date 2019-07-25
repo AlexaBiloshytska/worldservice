@@ -24,8 +24,22 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
+    public void add(Country country) {
+        countryDao.add(country);
+    }
+
+    @Override
+    public int delete(String code) {
+        return countryDao.delete(code);
+    }
+
+    @Override
     public List<Country> getCountriesByCriteria(CountrySearchQuery countrySearchQuery) {
         return countryDao.searchByCriteria(countrySearchQuery);
     }
 
+    @Override
+    public int update(Country country) {
+        return countryDao.update(country);
+    }
 }

@@ -21,17 +21,17 @@ create table country
   lifeexpectancy real,
   gnp            numeric(10, 2),
   gnpold         numeric(10, 2),
-  localname      text      not null,
+  localname      text      ,
   governmentform text      not null,
   headofstate    text,
   capital        integer,
-  code2          char(2)   not null
+  code2          char(100)
 );
 
 create table country_language
 (
   countrycode char(20) default  not null
-      references country,
+      references country ON DELETE CASCADE,
   language    char(50)  not null,
   isofficial  boolean  default false      not null,
   percentage  real     not null,
