@@ -1,7 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.CitySearchCriteria;
 import com.shelberg.entity.SearchCity;
+import com.shelberg.search.CitySearchQuery;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 public class JdbcCityDaoTestIT {
     private static HikariConfig config = new HikariConfig();
@@ -32,18 +31,13 @@ public class JdbcCityDaoTestIT {
     public void searchCityByCriteria() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
-        CitySearchCriteria citySearchCriteria = new CitySearchCriteria();
-        citySearchCriteria.setCountryRequired(true);
-        citySearchCriteria.setPopulationRequired(true);
-        citySearchCriteria.setCountryPopulationRequired(false);
+        CitySearchQuery citySearchQuery = new CitySearchQuery.Builder("a1", "iv", "Europe")
+                .countryRequired(true)
+                .populationRequired(true)
+                .countryPopulationRequired(false).build();
 
-        citySearchCriteria.setCountry("al");
-        citySearchCriteria.setName("iv");
-        citySearchCriteria.setContinent("Europe");
-
-        List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(citySearchCriteria);
+        List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(citySearchQuery);
 
         Assert.assertNotNull(cities);
-
     }
 }

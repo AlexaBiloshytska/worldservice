@@ -1,8 +1,9 @@
 package com.alexa.worldservice.dao;
 
 
-import com.alexa.worldservice.entity.CountrySearchCriteria;
 import com.shelberg.entity.Country;
+import com.shelberg.search.CountrySearchQuery;
+
 import java.util.List;
 
 public interface CountryDao {
@@ -10,5 +11,5 @@ public interface CountryDao {
 
     List<Country> getCountriesByLanguage(String language);
 
-    List<Country> searchByCriteria(CountrySearchCriteria countrySearchCriteria);
+    List<Country> searchByCriteria(CountrySearchQuery countrySearchQuery);
 }

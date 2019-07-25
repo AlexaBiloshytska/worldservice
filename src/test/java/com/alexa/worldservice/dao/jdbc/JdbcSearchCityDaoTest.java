@@ -1,6 +1,7 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.entity.CitySearchCriteria;
+import com.shelberg.search.CitySearchQuery;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,13 +16,12 @@ public class JdbcSearchCityDaoTest {
     public void getGetCityByCriteriaQuery() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
-        CitySearchCriteria citySearchCriteria = new CitySearchCriteria();
+        String country = "al";
+        String name = "iv";
+        String continent = "Europe";
+        CitySearchQuery citySearchQuery = new CitySearchQuery.Builder(country, name, continent).build();
 
-        citySearchCriteria.setCountry( "al");
-        citySearchCriteria.setName("iv");
-        citySearchCriteria.setContinent("Europe");
-
-       String cityByCriteriaQuery = jdbcCityDao.getCityByCriteriaQuery(citySearchCriteria);
+        String cityByCriteriaQuery = jdbcCityDao.getCityByCriteriaQuery(citySearchQuery);
         Assert.assertNotNull(cityByCriteriaQuery);
     }
 }

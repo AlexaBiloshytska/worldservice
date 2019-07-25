@@ -7,6 +7,7 @@ import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Language;
+import com.shelberg.search.CountrySearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,8 +118,8 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public List<Country> searchByCriteria(CountrySearchCriteria countrySearchCriteria) {
-        String criteriaQuery = getCountryCriteriaQuery(countrySearchCriteria);
+    public List<Country> searchByCriteria(CountrySearchQuery countrySearchQuery) {
+        String criteriaQuery = getCountryCriteriaQuery(countrySearchQuery);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -135,30 +136,30 @@ public class JdbcCountryDao implements CountryDao {
         }
     }
 
-    String getCountryCriteriaQuery(CountrySearchCriteria countrySearchCriteria) {
+    String getCountryCriteriaQuery(CountrySearchQuery countrySearchQuery) {
         StringBuilder stringBuilder = new StringBuilder(GET_COUNTRY_BY_CRITERIA);
-        if (CountrySearchCriteria.class.getName() != null && !CountrySearchCriteria.class.getName().isEmpty()) {
+        if (countrySearchQuery.getName() != null && !countrySearchQuery.getName().isEmpty()) {
             stringBuilder
                     .append(" AND lower(c.name) like '%")
-                    .append(countrySearchCriteria.getName().toLowerCase())
+                    .append(countrySearchQuery.getName().toLowerCase())
                     .append("%'");
         }
-        if (countrySearchCriteria.getContinent() != null && !countrySearchCriteria.getContinent().isEmpty()) {
+        if (countrySearchQuery.getContinent() != null && !countrySearchQuery.getContinent().isEmpty()) {
             stringBuilder
                     .append(" AND lower(c.continent) = '")
-                    .append(countrySearchCriteria.getContinent().toLowerCase())
+                    .append(countrySearchQuery.getContinent().toLowerCase())
                     .append("'");
         }
-        if (countrySearchCriteria.getPopulation() != null && countrySearchCriteria.getPopulation() > 0) {
+        if (countrySearchQuery.getPopulation() != null && countrySearchQuery.getPopulation() > 0) {
             stringBuilder
                     .append(" AND c.population >= ")
-                    .append(countrySearchCriteria.getPopulation());
+                    .append(countrySearchQuery.getPopulation());
         }
-        if (countrySearchCriteria.getPage() != null && countrySearchCriteria.getPage() > 0) {
-            int offset = (countrySearchCriteria.getPage() - 1) * countrySearchCriteria.getLimit();
+        if (countrySearchQuery.getPage() != null && countrySearchQuery.getPage() > 0) {
+            int offset = (countrySearchQuery.getPage() - 1) * countrySearchQuery.getLimit();
             stringBuilder
                     .append(" LIMIT ")
-                    .append(countrySearchCriteria.getLimit())
+                    .append(countrySearchQuery.getLimit())
                     .append(" OFFSET ")
                     .append(offset);
         }
