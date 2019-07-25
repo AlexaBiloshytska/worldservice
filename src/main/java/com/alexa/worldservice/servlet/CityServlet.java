@@ -37,7 +37,7 @@ public class CityServlet extends HttpServlet {
             try {
                 City city = cityService.getCityById(id);
                 String xml = xmlMapper.writerWithView(City.class).writeValueAsString(city);
-                response.setContentType(MimeType.APPLICATION_XML.getValue());
+                response.setContentType(MimeType.APPLICATION_JSON.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(xml);
 
@@ -51,18 +51,10 @@ public class CityServlet extends HttpServlet {
         logger.info("Finished getting city with id in {} ms", startTime - System.currentTimeMillis());
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String name = request.getParameter("name");
-        String countryCode = request.getParameter("countryCode");
-        String district = request.getParameter("district");
-        Integer population = request.getIntHeader("population");
-
-        City city = new City();
-        city.setName(name);
-        city.setDistrict(district);
-        city.setCountryCode(countryCode);
-        city.setPopulation(population);
+        String cityJson = getRequestBody(request);
+        City city = objectMapper.readValue(cityJson, City.class);
 
         cityService.add(city);
         logger.info("City is successfully added {}", city);

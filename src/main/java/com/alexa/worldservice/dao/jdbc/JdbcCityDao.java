@@ -29,7 +29,7 @@ public class JdbcCityDao implements CityDao {
                     "where 1=1 ";
 
     private static final String ADD_CITY = "INSERT INTO city" +
-            "(id,name, country_code,district,population) values(?,?,?,?,?)";
+            "(name, country_code,district,population) values(?,?,?,?)";
 
     private static final String UPDATE_CITY = "UPDATE city set name=?, " +
             " country_code =?, district =?,population =? where id =?";
@@ -102,11 +102,10 @@ public class JdbcCityDao implements CityDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(ADD_CITY)) {
 
-            preparedStatement.setInt(1, city.getId());
-            preparedStatement.setString(2, city.getName());
-            preparedStatement.setString(3, city.getCountryCode());
-            preparedStatement.setString(4, city.getDistrict());
-            preparedStatement.setInt(5, city.getPopulation());
+            preparedStatement.setString(1, city.getName());
+            preparedStatement.setString(2, city.getCountryCode());
+            preparedStatement.setString(3, city.getDistrict());
+            preparedStatement.setInt(4, city.getPopulation());
 
             preparedStatement.execute();
 

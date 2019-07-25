@@ -57,7 +57,6 @@ public class JdbcCityDaoTestIT {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
         City city = new City();
-        city.setId(9999999);
         city.setName("Nicaragua");
         city.setCountryCode("NK");
         city.setDistrict("Spain");
@@ -65,7 +64,8 @@ public class JdbcCityDaoTestIT {
 
         jdbcCityDao.add(city);
 
-        City cityById = jdbcCityDao.getCityById(9999999);
+        City cityById = jdbcCityDao.getCityById(6);
+        city.setId(6);
         Assert.assertEquals(city, cityById);
     }
 
@@ -84,7 +84,7 @@ public class JdbcCityDaoTestIT {
     public void update() {
         JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
 
-        int id = 34;
+        int id = 5;
         City cityBeforeUpdate = jdbcCityDao.getCityById(id);
 
         cityBeforeUpdate.setPopulation(0);

@@ -2,15 +2,13 @@ package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.shelberg.entity.Country;
+import com.shelberg.search.CountrySearchQuery;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import com.shelberg.search.CountrySearchQuery;
 import org.junit.Test;
-import org.mockito.Mock;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 public class JdbcCountryDaoTest {
@@ -43,7 +41,7 @@ public class JdbcCountryDaoTest {
         Assert.assertEquals("Europe", country.getContinent());
         Assert.assertEquals("Central Africa", country.getRegion());
         Assert.assertEquals(1246700.0, country.getSurfaceArea(), 0.01);
-        Assert.assertEquals(12878000,(int) country.getPopulation());
+        Assert.assertEquals(12878000, (int) country.getPopulation());
         Assert.assertNotEquals(0, country.getLanguageList().size());
 
     }
@@ -69,18 +67,19 @@ public class JdbcCountryDaoTest {
 
         Assert.assertNotNull(countries);
 
+        Country country = countries.get(0);
         Assert.assertEquals(1, countries.size());
-        Assert.assertEquals("ALB", countries.get(0).getCode());
-        Assert.assertEquals("Albania", countries.get(0).getName());
-        Assert.assertEquals("Europe", countries.get(0).getContinent());
-        Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
-        Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 0.00);
-        Assert.assertEquals(1912,(int) countries.get(0).getIndepYear());
-        Assert.assertEquals(3401200, (int)countries.get(0).getPopulation());
-        Assert.assertEquals(71.5999984741211, countries.get(0).getLifeExpectancy(), 0.00);
-        Assert.assertEquals("Republic", countries.get(0).getGovernmentForm());
-        Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
-        Assert.assertEquals("Tirana", countries.get(0).getCapital());
+        Assert.assertEquals("ALB", country.getCode());
+        Assert.assertEquals("Albania", country.getName());
+        Assert.assertEquals("Europe", country.getContinent());
+        Assert.assertEquals("Southern Europe", country.getRegion());
+        Assert.assertEquals(28748.0, country.getSurfaceArea(), 0.00);
+        Assert.assertEquals(1912, (int) country.getIndepYear());
+        Assert.assertEquals(3401200, (int) country.getPopulation());
+        Assert.assertEquals(71.5999984741211, country.getLifeExpectancy(), 0.00);
+        Assert.assertEquals("Republic", country.getGovernmentForm());
+        Assert.assertEquals("Rexhep Mejdani", country.getHeadOfState());
+        Assert.assertEquals("Tirana", country.getCapital());
 
         String countryCriteriaQuery = jdbcCountryDao.getCountryCriteriaQuery(countrySearchQuery);
         System.out.println(countryCriteriaQuery);
@@ -129,7 +128,7 @@ public class JdbcCountryDaoTest {
 
         Country country = new Country();
         country.setName("Ukraine");
-        country.setContinent("Erope");
+        country.setContinent("Europe");
         country.setRegion("Central Europe");
         country.setSurfaceArea(300.00);
         country.setIndepYear(1991);
@@ -139,11 +138,11 @@ public class JdbcCountryDaoTest {
         country.setHeadOfState("Volodymyr Zelemskyi");
         country.setCapital("Qandahar");
         country.setCode2("UKR");
-        country.setCode("ALB");
+        country.setCode("AIA");
 
         jdbcCountryDao.update(country);
 
-        Country countryAfter = jdbcCountryDao.getCountryByCode("ALB");
+        Country countryAfter = jdbcCountryDao.getCountryByCode("AIA");
         Assert.assertNotEquals(countryBefore, countryAfter);
 
     }
