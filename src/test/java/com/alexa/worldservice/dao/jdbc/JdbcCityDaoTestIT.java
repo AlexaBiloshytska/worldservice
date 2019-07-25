@@ -1,5 +1,11 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.exception.NoDataFoundException;
+import com.shelberg.entity.City;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Assert;
+import org.junit.Before;
 import com.shelberg.entity.SearchCity;
 import com.shelberg.search.CitySearchQuery;
 import com.zaxxer.hikari.HikariConfig;
@@ -39,5 +45,55 @@ public class JdbcCityDaoTestIT {
         List<SearchCity> cities = jdbcCityDao.searchCityByCriteria(citySearchQuery);
 
         Assert.assertNotNull(cities);
+        String country = "al";
+        String name = "iv";
+        String continent = "Europe";
+
+        Assert.assertNotNull(cities);
+    }
+
+    @Test
+    public void add() {
+        JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
+
+        City city = new City();
+        city.setId(9999999);
+        city.setName("Nicaragua");
+        city.setCountryCode("NK");
+        city.setDistrict("Spain");
+        city.setPopulation(4500000);
+
+        jdbcCityDao.add(city);
+
+        City cityById = jdbcCityDao.getCityById(9999999);
+        Assert.assertEquals(city, cityById);
+    }
+
+    @Test(expected = NoDataFoundException.class)
+    public void delete() {
+        JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
+        int id = 1;
+        City beforeDeletion = jdbcCityDao.getCityById(id);
+        jdbcCityDao.delete(id);
+        City afterDeletion = jdbcCityDao.getCityById(id);
+
+        Assert.assertNotEquals(beforeDeletion,afterDeletion);
+    }
+
+    @Test
+    public void update() {
+        JdbcCityDao jdbcCityDao = new JdbcCityDao(dataSource);
+
+        int id = 34;
+        City cityBeforeUpdate = jdbcCityDao.getCityById(id);
+
+        cityBeforeUpdate.setPopulation(0);
+
+        jdbcCityDao.update(cityBeforeUpdate);
+
+        City cityAfterUpdate = jdbcCityDao.getCityById(id);
+
+        Assert.assertEquals(cityBeforeUpdate, cityAfterUpdate);
+
     }
 }

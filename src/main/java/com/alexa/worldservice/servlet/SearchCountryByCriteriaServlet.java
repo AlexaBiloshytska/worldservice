@@ -2,7 +2,6 @@ package com.alexa.worldservice.servlet;
 
 import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
-import com.alexa.worldservice.entity.CountrySearchCriteria;
 import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
@@ -31,7 +30,7 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
         String continent = request.getParameter("continent");
 
         String populationParam = request.getParameter("population");
-        Integer population = populationParam != null ? Integer.valueOf(populationParam) : null;
+        Integer population = populationParam != null ? Integer.valueOf(populationParam) : 0;
 
         String pageParam = request.getParameter("page");
         Integer page = pageParam != null ? Integer.valueOf(pageParam) : 1;

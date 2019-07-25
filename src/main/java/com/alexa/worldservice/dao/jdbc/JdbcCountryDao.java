@@ -1,7 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.alexa.worldservice.entity.CountrySearchCriteria;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
@@ -144,6 +143,7 @@ public class JdbcCountryDao implements CountryDao {
                 return countries;
             }
         } catch (SQLException e) {
+            logger.error("Unable to execute sql query: {}", GET_COUNTRIES_BY_LANGUAGE, e);
             throw new RuntimeException("Unable to execute sql query: " + GET_COUNTRIES_BY_LANGUAGE, e);
         }
     }

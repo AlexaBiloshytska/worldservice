@@ -33,8 +33,9 @@ public class SearchCityByCriteriaServlet extends HttpServlet {
                     .countryRequired(fields.contains("countryName"))
                     .populationRequired(fields.contains("population"))
                     .countryPopulationRequired((fields.contains("countryPopulation"))).build();
+        } else {
+            citySearchQuery = new CitySearchQuery.Builder(country, name, continent).build();
         }
-        citySearchQuery = new CitySearchQuery.Builder(country, name, continent).build();
 
         String acceptType = request.getHeaders("Accept").nextElement();
 

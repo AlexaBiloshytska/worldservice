@@ -1,7 +1,7 @@
 package com.alexa.worldservice.service;
 
 import com.alexa.worldservice.dao.jdbc.CityDao;
-import com.alexa.worldservice.entity.CitySearchCriteria;
+import com.shelberg.entity.City;
 import com.shelberg.entity.SearchCity;
 import com.shelberg.search.CitySearchQuery;
 
@@ -18,4 +18,26 @@ public class DefaultCityService implements CityService {
     public List<SearchCity> getCitiesByCriteria(CitySearchQuery CitySearchQuery) {
         return cityDao.searchCityByCriteria(CitySearchQuery);
     }
+
+    @Override
+    public void add(City city) {
+        cityDao.add(city);
+    }
+
+    @Override
+    public void update(City city) {
+        cityDao.update(city);
+    }
+
+    @Override
+    public void delete(int id) {
+      cityDao.delete(id);
+    }
+
+    @Override
+    public City getCityById(int id) {
+        return cityDao.getCityById(id);
+    }
+
+
 }

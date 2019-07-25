@@ -60,13 +60,14 @@ public class JdbcCountryDaoIT {
         Assert.assertEquals("Albania", countries.get(0).getName());
         Assert.assertEquals("Europe", countries.get(0).getContinent());
         Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
-        Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 1);
+        Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 0.00);
         Assert.assertEquals(1912, (int)countries.get(0).getIndepYear());
         Assert.assertEquals(3401200, (int)countries.get(0).getPopulation());
-        Assert.assertEquals(71.5999984741211, countries.get(0).getLifeExpectancy(), 1);
+        Assert.assertEquals(71.5, countries.get(0).getLifeExpectancy(), 0.1);
         Assert.assertEquals("Republic", countries.get(0).getGovernmentForm());
         Assert.assertEquals("Rexhep Mejdani", countries.get(0).getHeadOfState());
         Assert.assertEquals("Tirana", countries.get(0).getCapital());
+
     }
 
     @Test
