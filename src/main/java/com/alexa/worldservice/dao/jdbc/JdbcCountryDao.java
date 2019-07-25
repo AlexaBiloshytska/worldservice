@@ -138,7 +138,7 @@ public class JdbcCountryDao implements CountryDao {
 
     String getCountryCriteriaQuery(CountrySearchQuery countrySearchQuery) {
         StringBuilder stringBuilder = new StringBuilder(GET_COUNTRY_BY_CRITERIA);
-        if (CountrySearchCriteria.class.getName() != null && !CountrySearchCriteria.class.getName().isEmpty()) {
+        if (countrySearchQuery.getName() != null && !countrySearchQuery.getName().isEmpty()) {
             stringBuilder
                     .append(" AND lower(c.name) like '%")
                     .append(countrySearchQuery.getName().toLowerCase())
