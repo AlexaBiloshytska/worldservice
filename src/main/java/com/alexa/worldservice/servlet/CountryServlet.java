@@ -65,8 +65,8 @@ public class CountryServlet extends HttpServlet {
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String cityJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Country country = mapper.readValue(cityJson, Country.class);
+        String countryJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        Country country = mapper.readValue(countryJson, Country.class);
 
         countryService.update(country);
         logger.info("Country is successfully updated {}", country);

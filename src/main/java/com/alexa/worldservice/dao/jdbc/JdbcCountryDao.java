@@ -134,11 +134,11 @@ public class JdbcCountryDao implements CountryDao {
     public void add(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
-             PreparedStatement preparedStatement = connection.prepareStatement(ADD_COUNTRY, PreparedStatement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement addCountry = connection.prepareStatement(ADD_COUNTRY)) {
 
             capitalStatement.setString(1, country.getCapital());
 
-            countryProcessing(country, capitalStatement, preparedStatement);
+            countryProcessing(country, capitalStatement, addCountry);
             logger.info("Country is successfully inserted {}", country);
 
         } catch (SQLException e) {
@@ -151,11 +151,11 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void delete(String code) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COUNTRY_BY_CODE)) {
+             PreparedStatement deleteCountry = connection.prepareStatement(DELETE_COUNTRY_BY_CODE)) {
 
-            preparedStatement.setString(1, code);
+            deleteCountry.setString(1, code);
 
-            preparedStatement.executeUpdate();
+            deleteCountry.executeUpdate();
 
             logger.info("Deleting country with name {}", code);
 
@@ -169,11 +169,11 @@ public class JdbcCountryDao implements CountryDao {
     public void update(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COUNTRY, new String[]{"code"})) {
+             PreparedStatement updateCountry = connection.prepareStatement(UPDATE_COUNTRY)) {
 
             capitalStatement.setString(1, country.getCapital());
 
-            countryProcessing(country, capitalStatement, preparedStatement);
+            countryProcessing(country, capitalStatement, updateCountry);
             logger.info("Country is successfully updated {}", country);
         } catch (SQLException e) {
             throw new RuntimeException("Unable to update country", e);
