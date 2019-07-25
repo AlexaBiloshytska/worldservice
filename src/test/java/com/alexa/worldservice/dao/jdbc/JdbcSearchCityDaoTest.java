@@ -1,6 +1,5 @@
 package com.alexa.worldservice.dao.jdbc;
 
-import com.alexa.worldservice.entity.CitySearchCriteria;
 import com.shelberg.search.CitySearchQuery;
 import org.junit.Assert;
 import org.junit.Test;

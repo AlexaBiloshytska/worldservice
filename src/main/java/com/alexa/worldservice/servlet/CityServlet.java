@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -81,11 +82,21 @@ public class CityServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String cityJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        String cityJson = getRequestBody(request);
         City city = objectMapper.readValue(cityJson, City.class);
 
         cityService.update(city);
         logger.info("City is successfully updated {}", city);
+    }
+
+    private String getRequestBody(HttpServletRequest request) throws IOException {
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = request.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            buffer.append(line);
+        }
+        return buffer.toString();
     }
 }
 
