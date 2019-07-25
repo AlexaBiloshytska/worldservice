@@ -216,16 +216,16 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void delete(String code) {
+    public int delete(String code) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deleteCountry = connection.prepareStatement(DELETE_COUNTRY_BY_CODE)) {
 
             deleteCountry.setString(1, code);
 
-            deleteCountry.executeUpdate();
+            int affectedRows = deleteCountry.executeUpdate();
 
             logger.info("Deleting country with name {}", code);
-
+            return affectedRows;
         } catch (SQLException e) {
             throw new RuntimeException("Unable to delete country", e);
         }
@@ -233,15 +233,17 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void update(Country country) {
+    public int update(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
              PreparedStatement updateCountry = connection.prepareStatement(UPDATE_COUNTRY)) {
 
             capitalStatement.setString(1, country.getCapital());
 
-            countryProcessing(country, capitalStatement, updateCountry);
+            int affectedRows = countryProcessing(country, capitalStatement, updateCountry);
             logger.info("Country is successfully updated {}", country);
+
+            return affectedRows;
         } catch (SQLException e) {
             throw new RuntimeException("Unable to update country", e);
         }
@@ -267,7 +269,7 @@ public class JdbcCountryDao implements CountryDao {
     }
 
 
-    private void countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
+    private int countryProcessing(Country country, PreparedStatement capitalStatement, PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet capitalResultSet = capitalStatement.executeQuery()) {
             capitalResultSet.next();
             int capitalId = capitalResultSet.getInt("id");
@@ -284,7 +286,7 @@ public class JdbcCountryDao implements CountryDao {
             preparedStatement.setInt(10, capitalId);
             preparedStatement.setString(11, country.getCode2());
             preparedStatement.setString(12, country.getCode());
-            preparedStatement.execute();
+            return preparedStatement.executeUpdate();
         }
     }
 }

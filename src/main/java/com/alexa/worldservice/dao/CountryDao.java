@@ -14,9 +14,9 @@ public interface CountryDao {
 
     void add(Country country);
 
-    void delete(String name);
+    int delete(String name);
 
-    void update(Country country);
+    int update(Country country);
 
     Country getCountryByCode (String code);
 

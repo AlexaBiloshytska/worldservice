@@ -71,7 +71,7 @@ public class JdbcCountryDaoTest {
 
         Assert.assertEquals(1, countries.size());
         Assert.assertEquals("ALB", countries.get(0).getCode());
-        Assert.assertEquals("Ukraine", countries.get(0).getName());
+        Assert.assertEquals("Albania", countries.get(0).getName());
         Assert.assertEquals("Europe", countries.get(0).getContinent());
         Assert.assertEquals("Southern Europe", countries.get(0).getRegion());
         Assert.assertEquals(28748.0, countries.get(0).getSurfaceArea(), 0.00);

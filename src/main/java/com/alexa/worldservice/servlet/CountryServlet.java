@@ -16,8 +16,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @WebServlet(urlPatterns = "/api/v1/countries")
@@ -35,11 +37,11 @@ public class CountryServlet extends HttpServlet {
 
         logger.info("Getting country with country name {} ", countryName);
 
-        if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
+        if (acceptType.contains(MimeType.APPLICATION_JSON.getValue())) {
             try {
                 Country country = countryService.getCountry(countryName);
                 String xml = xmlMapper.writerWithView(CountryStatistic.class).writeValueAsString(country);
-                response.setContentType(MimeType.APPLICATION_XML.getValue());
+                response.setContentType(MimeType.APPLICATION_JSON.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(xml);
@@ -56,28 +58,56 @@ public class CountryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String cityJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Country country = mapper.readValue(cityJson, Country.class);
+        String countryJson = getRequestBody(request);
+
+        Country country = mapper.readValue(countryJson, Country.class);
 
         countryService.add(country);
         logger.info("Country is successfully added {}", country);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
-    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String countryJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String countryJson = getRequestBody(request);
+
         Country country = mapper.readValue(countryJson, Country.class);
 
-        countryService.update(country);
+        int affectedRows = countryService.update(country);
+        if (affectedRows != 0) {
+            logger.info("Country{} is successfully updated", country);
+        } else {
+            logger.warn("Country with code is not updated");
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+
         logger.info("Country is successfully updated {}", country);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    private String getRequestBody(HttpServletRequest request) throws IOException {
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = request.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            buffer.append(line);
+        }
+        return buffer.toString();
     }
 
     @Override
-    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String code = request.getParameter("code");
 
-        countryService.delete(code);
-        logger.info("Country with code: {} is successfully deleted", code);
+        int affectedRows = countryService.delete(code);
+        if (affectedRows == 0) {
+            logger.warn("Country with code: {} was not found", code);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            logger.info("Country with code: {} is successfully deleted", code);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 }
 

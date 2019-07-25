@@ -29,8 +29,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public void delete(String name) {
-        countryDao.delete(name);
+    public int delete(String code) {
+        return countryDao.delete(code);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public void update(Country country) {
-        countryDao.update(country);
+    public int update(Country country) {
+        return countryDao.update(country);
     }
 }

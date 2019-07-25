@@ -12,8 +12,8 @@ public interface CountryService {
 
     void add(Country country);
 
-    void delete(String name);
+    int delete(String name);
 
-    void update(Country country);
+    int update(Country country);
     List<Country> getCountriesByCriteria(CountrySearchQuery countrySearchQuery);
 }
