@@ -1,8 +1,12 @@
 package com.alexa.worldservice;
 
 import com.alexa.worldservice.dao.CountryDao;
+import com.alexa.worldservice.dao.jdbc.CityDao;
+import com.alexa.worldservice.dao.jdbc.JdbcCityDao;
 import com.alexa.worldservice.dao.jdbc.JdbcCountryDao;
+import com.alexa.worldservice.service.CityService;
 import com.alexa.worldservice.service.CountryService;
+import com.alexa.worldservice.service.DefaultCityService;
 import com.alexa.worldservice.service.DefaultCountryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -22,6 +26,9 @@ import java.util.Properties;
 public class ServiceLocator {
     private static final Logger logger = LoggerFactory.getLogger(ServiceLocator.class);
     private static final String localPropFileName = "application.local.properties";
+
+    private static final XmlMapper xmlMapper = new XmlMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Map<Class<?>, Object> LOCATOR = initDefaultDependencies();
 
     private static Map<Class<?>, Object> initDefaultDependencies() {
@@ -31,13 +38,15 @@ public class ServiceLocator {
         //config dao
         HikariDataSource dataSource = getHikariDataSource();
         CountryDao countryDao = new JdbcCountryDao(dataSource);
-
+        CityDao cityDao = new JdbcCityDao(dataSource);
         //config services
         CountryService countryService = new DefaultCountryService(countryDao);
+        CityService cityService = new DefaultCityService(cityDao);
 
         map.put(CountryService.class, countryService);
-        map.put(XmlMapper.class, new XmlMapper());
-        map.put(ObjectMapper.class, new ObjectMapper());
+        map.put(CityService.class,cityService);
+        map.put(XmlMapper.class,xmlMapper);
+        map.put(ObjectMapper.class,objectMapper);
 
         return map;
     }

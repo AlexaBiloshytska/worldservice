@@ -192,7 +192,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (1
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (181, 'Schaerbeek', 'BEL', 'Bryssel', 105692);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (182, 'Namur', 'BEL', 'Namur', 105419);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (183, 'Mons', 'BEL', 'Hainaut', 90935);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (184, 'Belize City', 'BLZ', 'Belize City', 55810);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (184, 'Belize SearchCity', 'BLZ', 'Belize SearchCity', 55810);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (185, 'Belmopan', 'BLZ', 'Cayo', 7105);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (186, 'Cotonou', 'BEN', 'Atlantique', 536827);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (187, 'Porto-Novo', 'BEN', 'Ou©m©', 194000);
@@ -1108,7 +1108,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (1
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (1097, 'Ujjain', 'IND', 'Madhya Pradesh', 362266);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (1098, 'Malegaon', 'IND', 'Maharashtra', 342595);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (1099, 'Jamnagar', 'IND', 'Gujarat', 341637);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (1100, 'Bokaro Steel City', 'IND', 'Jharkhand', 333683);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (1100, 'Bokaro Steel SearchCity', 'IND', 'Jharkhand', 333683);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (1101, 'Akola', 'IND', 'Maharashtra', 328034);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (1102, 'Belgaum', 'IND', 'Karnataka', 326399);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (1103, 'Rajahmundry', 'IND', 'Andhra Pradesh', 324851);
@@ -2773,7 +2773,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (2
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (2762, 'Ila', 'NGA', 'Oyo & Osun', 264000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (2763, 'Oyo', 'NGA', 'Oyo & Osun', 256400);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (2764, 'Ikerre', 'NGA', 'Ondo & Ekiti', 244600);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (2765, 'Benin City', 'NGA', 'Edo & Delta', 229400);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (2765, 'Benin SearchCity', 'NGA', 'Edo & Delta', 229400);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (2766, 'Iseyin', 'NGA', 'Oyo & Osun', 217300);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (2767, 'Katsina', 'NGA', 'Katsina', 206500);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (2768, 'Jos', 'NGA', 'Plateau & Nassarawa', 206300);
@@ -3588,7 +3588,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3577, 'San Fernando de Apure', 'VEN', 'Apure', 93809);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3578, 'San Felipe', 'VEN', 'Yaracuy', 90940);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3579, 'El Limгn', 'VEN', 'Aragua', 90000);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3580, 'Moscow', 'RUS', 'Moscow (City)', 8389200);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3580, 'Moscow', 'RUS', 'Moscow (SearchCity)', 8389200);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3581, 'St Petersburg', 'RUS', 'Pietari', 4694000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3582, 'Novosibirsk', 'RUS', 'Novosibirsk', 1398800);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3583, 'Nizni Novgorod', 'RUS', 'Nizni Novgorod', 1357000);
@@ -3675,7 +3675,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3664, 'Blagove?t?ensk', 'RUS', 'Amur', 222000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3665, '?ahty', 'RUS', 'Rostov-na-Donu', 221800);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3666, 'Staryi Oskol', 'RUS', 'Belgorod', 213800);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3667, 'Zelenograd', 'RUS', 'Moscow (City)', 207100);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3667, 'Zelenograd', 'RUS', 'Moscow (SearchCity)', 207100);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3668, 'Balakovo', 'RUS', 'Saratov', 206000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3669, 'Novorossijsk', 'RUS', 'Krasnodar', 203300);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3670, 'Pihkova', 'RUS', 'Pihkova', 201500);
@@ -3777,7 +3777,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3766, 'Klin', 'RUS', 'Moskova', 90000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3767, 'T?aikovski', 'RUS', 'Perm', 90000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3768, 'Novyi Urengoi', 'RUS', 'Yamalin Nenetsia', 89800);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3769, 'Ho Chi Minh City', 'VNM', 'Ho Chi Minh City', 3980000);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3769, 'Ho Chi Minh SearchCity', 'VNM', 'Ho Chi Minh SearchCity', 3980000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3770, 'Hanoi', 'VNM', 'Hanoi', 1410000);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3771, 'Haiphong', 'VNM', 'Haiphong', 783133);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3772, 'Da Nang', 'VNM', 'Quang Nam-Da Nang', 382674);
@@ -3829,14 +3829,14 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3818, 'Charlotte', 'USA', 'North Carolina', 540828);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3819, 'Fort Worth', 'USA', 'Texas', 534694);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3820, 'Portland', 'USA', 'Oregon', 529121);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3821, 'Oklahoma City', 'USA', 'Oklahoma', 506132);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3821, 'Oklahoma SearchCity', 'USA', 'Oklahoma', 506132);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3822, 'Tucson', 'USA', 'Arizona', 486699);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3823, 'New Orleans', 'USA', 'Louisiana', 484674);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3824, 'Las Vegas', 'USA', 'Nevada', 478434);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3825, 'Cleveland', 'USA', 'Ohio', 478403);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3826, 'Long Beach', 'USA', 'California', 461522);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3827, 'Albuquerque', 'USA', 'New Mexico', 448607);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3828, 'Kansas City', 'USA', 'Missouri', 441545);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3828, 'Kansas SearchCity', 'USA', 'Missouri', 441545);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3829, 'Fresno', 'USA', 'California', 427652);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3830, 'Virginia Beach', 'USA', 'Virginia', 425257);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3831, 'Atlanta', 'USA', 'Georgia', 416474);
@@ -3872,7 +3872,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3861, 'Bakersfield', 'USA', 'California', 247057);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3862, 'Stockton', 'USA', 'California', 243771);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3863, 'Birmingham', 'USA', 'Alabama', 242820);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3864, 'Jersey City', 'USA', 'New Jersey', 240055);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3864, 'Jersey SearchCity', 'USA', 'New Jersey', 240055);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3865, 'Norfolk', 'USA', 'Virginia', 234403);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3866, 'Baton Rouge', 'USA', 'Louisiana', 227818);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3867, 'Hialeah', 'USA', 'Florida', 226419);
@@ -3906,12 +3906,12 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3895, 'Durham', 'USA', 'North Carolina', 187035);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3896, 'Columbus', 'USA', 'Georgia', 186291);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3897, 'Orlando', 'USA', 'Florida', 185951);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3898, 'Boise City', 'USA', 'Idaho', 185787);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3898, 'Boise SearchCity', 'USA', 'Idaho', 185787);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3899, 'Winston-Salem', 'USA', 'North Carolina', 185776);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3900, 'San Bernardino', 'USA', 'California', 185401);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3901, 'Jackson', 'USA', 'Mississippi', 184256);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3902, 'Little Rock', 'USA', 'Arkansas', 183133);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3903, 'Salt Lake City', 'USA', 'Utah', 181743);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3903, 'Salt Lake SearchCity', 'USA', 'Utah', 181743);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3904, 'Reno', 'USA', 'Nevada', 180480);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3905, 'Newport News', 'USA', 'Virginia', 180150);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3906, 'Chandler', 'USA', 'Arizona', 176581);
@@ -3944,7 +3944,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (3
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3933, 'Overland Park', 'USA', 'Kansas', 149080);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3934, 'Santa Rosa', 'USA', 'California', 147595);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3935, 'Syracuse', 'USA', 'New York', 147306);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (3936, 'Kansas City', 'USA', 'Kansas', 146866);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (3936, 'Kansas SearchCity', 'USA', 'Kansas', 146866);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3937, 'Hampton', 'USA', 'Virginia', 146437);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3938, 'Lakewood', 'USA', 'Colorado', 144126);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (3939, 'Vancouver', 'USA', 'Washington', 143560);
@@ -4012,7 +4012,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (4
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4001, 'Gilbert', 'USA', 'Arizona', 109697);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4002, 'Carrollton', 'USA', 'Texas', 109576);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4003, 'Bellevue', 'USA', 'Washington', 109569);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (4004, 'West Valley City', 'USA', 'Utah', 108896);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (4004, 'West Valley SearchCity', 'USA', 'Utah', 108896);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4005, 'Clarksville', 'USA', 'Tennessee', 108787);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4006, 'Costa Mesa', 'USA', 'California', 108724);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4007, 'Peoria', 'USA', 'Arizona', 108364);
@@ -4028,7 +4028,7 @@ INSERT INTO public.city (id, name, country_code, district, population) VALUES (4
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4017, 'West Covina', 'USA', 'California', 105080);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4018, 'Wichita Falls', 'USA', 'Texas', 104197);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4019, 'Erie', 'USA', 'Pennsylvania', 103717);
-INSERT INTO public.city (id, name, country_code, district, population) VALUES (4020, 'Daly City', 'USA', 'California', 103621);
+INSERT INTO public.city (id, name, country_code, district, population) VALUES (4020, 'Daly SearchCity', 'USA', 'California', 103621);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4021, 'Citrus Heights', 'USA', 'California', 103455);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4022, 'Norwalk', 'USA', 'California', 103298);
 INSERT INTO public.city (id, name, country_code, district, population) VALUES (4023, 'Gary', 'USA', 'Indiana', 102746);

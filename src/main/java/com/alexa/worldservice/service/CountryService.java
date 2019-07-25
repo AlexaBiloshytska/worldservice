@@ -1,6 +1,7 @@
 package com.alexa.worldservice.service;
 
 import com.shelberg.entity.Country;
+import com.shelberg.search.CountrySearchQuery;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface CountryService {
     void delete(String name);
 
     void update(Country country);
+    List<Country> getCountriesByCriteria(CountrySearchQuery countrySearchQuery);
 }

@@ -3,9 +3,7 @@ package com.alexa.worldservice.servlet;
 import com.alexa.worldservice.ServiceLocator;
 import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.service.CountryService;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +22,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
     private final ObjectMapper mapper = ServiceLocator.get(ObjectMapper.class);
     private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
@@ -36,6 +35,7 @@ public class CountriesByLanguageServlet extends HttpServlet {
             List<Country> countries = countryService.getCountriesByLanguage(language);
             String json = mapper.writerWithView(CountryData.class).writeValueAsString(countries);
             response.setContentType(MimeType.APPLICATION_JSON.getValue());
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(json);
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
