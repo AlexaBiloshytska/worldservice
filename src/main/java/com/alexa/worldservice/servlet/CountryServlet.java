@@ -32,21 +32,21 @@ public class CountryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
-        String countryName = request.getParameter("name");
+        String code = request.getParameter("code");
         String acceptType = request.getHeaders("Accept").nextElement();
 
-        logger.info("Getting country with country name {} ", countryName);
+        logger.info("Getting country with country name {} ", code);
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             try {
-                Country country = countryService.getCountry(countryName);
+                Country country = countryService.getCountry(code);
                 String xml = xmlMapper.writerWithView(CountryStatistic.class).writeValueAsString(country);
                 response.setContentType(MimeType.APPLICATION_XML.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(xml);
             } catch (NoDataFoundException e) {
-                logger.warn("The country with name: {} is not found", countryName);
+                logger.warn("The country with name: {} is not found", code);
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } else {

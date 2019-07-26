@@ -37,7 +37,7 @@ public class JdbcCountryDao implements CountryDao {
             "c.code2 " +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
-            "where c.name = ?";
+            "where c.code = ?";
 
     private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
             "c.continent,c.region,c.surfacearea," +
@@ -98,12 +98,12 @@ public class JdbcCountryDao implements CountryDao {
         this.dataSource = dataSource;
     }
 
-    public Country getCountry(String name) {
+    public Country getCountry(String code) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
             logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
 
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, code);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {

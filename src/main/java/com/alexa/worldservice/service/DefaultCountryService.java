@@ -14,8 +14,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public Country getCountry(String name) {
-        return countryDao.getCountry(name);
+    public Country getCountry(String code) {
+        return countryDao.getCountry(code);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class CityServlet extends HttpServlet {
             try {
                 City city = cityService.getCityById(id);
                 String xml = xmlMapper.writerWithView(City.class).writeValueAsString(city);
-                response.setContentType(MimeType.APPLICATION_JSON.getValue());
+                response.setContentType(MimeType.APPLICATION_XML.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(xml);
 

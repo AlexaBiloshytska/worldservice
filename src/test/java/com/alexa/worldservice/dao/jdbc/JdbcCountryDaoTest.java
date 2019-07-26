@@ -31,10 +31,10 @@ public class JdbcCountryDaoTest {
     public void getStatistics() {
         // Prepare
         JdbcCountryDao jdbcCountryDao = new JdbcCountryDao(dataSource);
-        String countryName = "Angola";
+        String code = "AGO";
 
         // Execute
-        Country country = jdbcCountryDao.getCountry(countryName);
+        Country country = jdbcCountryDao.getCountry(code);
 
         Assert.assertEquals("AGO", country.getCode());
         Assert.assertEquals("Angola", country.getName());
