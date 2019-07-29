@@ -24,8 +24,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public void add(Country country) {
-        countryDao.add(country);
+    public Country add(Country country) {
+       return countryDao.add(country);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public int update(Country country) {
+    public Country update(Country country) {
         return countryDao.update(country);
     }
 }

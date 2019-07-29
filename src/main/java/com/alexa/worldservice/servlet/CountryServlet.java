@@ -7,9 +7,9 @@ import com.alexa.worldservice.service.CountryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.Country;
+import com.shelberg.entity.Views.CountrySearch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.shelberg.entity.Views.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @WebServlet(urlPatterns = "/api/v1/countries")
@@ -40,7 +38,7 @@ public class CountryServlet extends HttpServlet {
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             try {
                 Country country = countryService.getCountry(code);
-                String xml = xmlMapper.writerWithView(CountryStatistic.class).writeValueAsString(country);
+                String xml = xmlMapper.writerWithView(CountrySearch.class).writeValueAsString(country);
                 response.setContentType(MimeType.APPLICATION_XML.getValue());
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("UTF-8");
@@ -62,28 +60,31 @@ public class CountryServlet extends HttpServlet {
 
         Country country = mapper.readValue(countryJson, Country.class);
 
-        countryService.add(country);
-        logger.info("Country is successfully added {}", country);
+        Country addedCountry = countryService.add(country);
+        String json = mapper.writeValueAsString(addedCountry);
         response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MimeType.APPLICATION_JSON.getValue());
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
+        logger.info("Country is successfully added {}", country);
+
     }
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String countryJson = getRequestBody(request);
-
         Country country = mapper.readValue(countryJson, Country.class);
 
-        int affectedRows = countryService.update(country);
-        if (affectedRows != 0) {
-            logger.info("Country{} is successfully updated", country);
-        } else {
-            logger.warn("Country with code is not updated");
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
+        Country updatedCountry = countryService.update(country);
+
+        String json = mapper.writeValueAsString(updatedCountry);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MimeType.APPLICATION_JSON.getValue());
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
 
         logger.info("Country is successfully updated {}", country);
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -99,6 +100,7 @@ public class CountryServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }
+
     private String getRequestBody(HttpServletRequest request) throws IOException {
         StringBuilder buffer = new StringBuilder();
         BufferedReader reader = request.getReader();

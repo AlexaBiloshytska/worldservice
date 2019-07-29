@@ -7,8 +7,6 @@ import com.alexa.worldservice.service.CityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.City;
-import com.shelberg.entity.Country;
-import com.shelberg.entity.Views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = "/api/v1/cities")
 public class CityServlet extends HttpServlet {
@@ -56,10 +53,15 @@ public class CityServlet extends HttpServlet {
         String cityJson = getRequestBody(request);
         City city = objectMapper.readValue(cityJson, City.class);
 
-        cityService.add(city);
+        City addedCity = cityService.add(city);
         logger.info("City is successfully added {}", city);
 
+        String xml = objectMapper.writeValueAsString(addedCity);
         response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MimeType.APPLICATION_JSON.getValue());
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(xml);
+
     }
 
     @Override
@@ -78,10 +80,14 @@ public class CityServlet extends HttpServlet {
         String cityJson = getRequestBody(request);
         City city = objectMapper.readValue(cityJson, City.class);
 
-        cityService.update(city);
+        City updatedCity = cityService.update(city);
         logger.info("City is successfully updated {}", city);
 
+        String json = objectMapper.writeValueAsString(updatedCity);
         response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MimeType.APPLICATION_JSON.getValue());
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
     }
 
     private String getRequestBody(HttpServletRequest request) throws IOException {

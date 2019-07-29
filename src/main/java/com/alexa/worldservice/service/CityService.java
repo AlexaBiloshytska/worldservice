@@ -9,9 +9,9 @@ import java.util.List;
 public interface CityService {
     List<SearchCity> getCitiesByCriteria(CitySearchQuery citySearchQuery);
 
-    void add(City city);
+    City add(City city);
 
-    void update(City city);
+    City update(City city);
 
     void delete(int id);
 

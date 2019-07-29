@@ -3,7 +3,6 @@ package com.alexa.worldservice.dao.jdbc;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.mapper.CityMapper;
 import com.alexa.worldservice.mapper.SearchCityMapper;
-import com.alexa.worldservice.mapper.SearchCityMapper;
 import com.shelberg.entity.City;
 import com.shelberg.entity.SearchCity;
 import com.shelberg.search.CitySearchQuery;
@@ -12,10 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +31,9 @@ public class JdbcCityDao implements CityDao {
 
     private static final String DELETE_CITY = "delete from city where id =?";
 
-    private static final String GET_CITY_BY_ID = "select c.id, c.name, c.district, c.country_code, c.population from city c where c.id = ?";
+    private static final String GET_CITY_BY_ID = "select c.id, c.name, c.district, c.country_code, " +
+            "c.population from city c where c.id = ?";
+
 
     private DataSource dataSource;
 
@@ -51,7 +48,7 @@ public class JdbcCityDao implements CityDao {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
 
-            try(ResultSet resultSet = statement.executeQuery(getCityQuery)){
+            try (ResultSet resultSet = statement.executeQuery(getCityQuery)) {
                 List<SearchCity> cities = new ArrayList<>();
                 while (resultSet.next()) {
                     cities.add(SEARCH_CITY_MAPPER.mapRow(resultSet, citySearchQuery));
@@ -81,15 +78,15 @@ public class JdbcCityDao implements CityDao {
         }
         if (citySearchQuery.getName() != null) {
             stringBuilder.
-                    append( " AND lower(c.name) like '%" ).
-                    append( citySearchQuery.getName().toLowerCase()).
-                    append( "%'");
+                    append(" AND lower(c.name) like '%").
+                    append(citySearchQuery.getName().toLowerCase()).
+                    append("%'");
         }
         if (citySearchQuery.getContinent() != null) {
             stringBuilder
-                    .append(" AND lower(cc.continent) like '%" )
-                    .append( citySearchQuery.getContinent().toLowerCase() )
-                    .append( "%'");
+                    .append(" AND lower(cc.continent) like '%")
+                    .append(citySearchQuery.getContinent().toLowerCase())
+                    .append("%'");
         }
 
         logger.info("Getting the query with additional parameters: {}", stringBuilder.toString());
@@ -98,41 +95,51 @@ public class JdbcCityDao implements CityDao {
     }
 
     @Override
-    public void add(City city) {
+    public City add(City city) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(ADD_CITY)) {
+             PreparedStatement addCity = connection.prepareStatement(ADD_CITY, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, city.getName());
-            preparedStatement.setString(2, city.getCountryCode());
-            preparedStatement.setString(3, city.getDistrict());
-            preparedStatement.setInt(4, city.getPopulation());
+            addCity.setString(1, city.getName());
+            addCity.setString(2, city.getCountryCode());
+            addCity.setString(3, city.getDistrict());
+            addCity.setInt(4, city.getPopulation());
 
-            preparedStatement.execute();
+            addCity.execute();
+            logger.info("City with name: {} is successfully inserted", city.getName());
 
-            logger.info("City is successfully inserted {}", city);
+
+            ResultSet generatedKeys = addCity.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return CITY_MAPPER.mapRow(generatedKeys);
+            }
+            throw new RuntimeException("Unable to get generated keys after city insert: " + city);
 
         } catch (SQLException e) {
-            logger.error("City insertion is failed {}", city, e);
+            throw new RuntimeException("City insertion is failed: " + city, e);
         }
     }
 
     @Override
-    public void update(City city) {
+    public City update(City city) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CITY)) {
+             PreparedStatement updateCity = connection.prepareStatement(UPDATE_CITY, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, city.getName());
-            preparedStatement.setString(2, city.getCountryCode());
-            preparedStatement.setString(3, city.getDistrict());
-            preparedStatement.setInt(4, city.getPopulation());
-            preparedStatement.setInt(5, city.getId());
+            updateCity.setString(1, city.getName());
+            updateCity.setString(2, city.getCountryCode());
+            updateCity.setString(3, city.getDistrict());
+            updateCity.setInt(4, city.getPopulation());
+            updateCity.setInt(5, city.getId());
 
-            preparedStatement.executeUpdate();
+            updateCity.executeUpdate();
 
-            logger.info("City with id: {} is successfully updated ", city.getId());
+            ResultSet generatedKeys = updateCity.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return CITY_MAPPER.mapRow(generatedKeys);
+            }
+            throw new RuntimeException("Unable to get generated keys after city update: " + city);
 
         } catch (SQLException e) {
-            logger.error("City update is failed {}", city, e);
+            throw new RuntimeException("City update is failed: " + city, e);
         }
     }
 

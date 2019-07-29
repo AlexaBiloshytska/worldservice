@@ -20,13 +20,14 @@ public class DefaultCityService implements CityService {
     }
 
     @Override
-    public void add(City city) {
-        cityDao.add(city);
+    public City add(City city) {
+        return cityDao.add(city);
     }
 
     @Override
-    public void update(City city) {
-        cityDao.update(city);
+    public City update(City city) {
+
+        return  cityDao.update(city);
     }
 
     @Override
