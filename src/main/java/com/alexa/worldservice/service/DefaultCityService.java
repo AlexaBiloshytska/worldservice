@@ -1,6 +1,6 @@
 package com.alexa.worldservice.service;
 
-import com.alexa.worldservice.dao.jdbc.CityDao;
+import com.alexa.worldservice.dao.CityDao;
 import com.shelberg.entity.City;
 import com.shelberg.entity.SearchCity;
 import com.shelberg.search.CitySearchQuery;

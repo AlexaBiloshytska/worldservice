@@ -21,73 +21,54 @@ import java.io.IOException;
 public class CityServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper = ServiceLocator.get(ObjectMapper.class);
-    private final XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
     private CityService cityService = ServiceLocator.get(CityService.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
 
         int id = Integer.parseInt(request.getParameter("id"));
-        String acceptType = request.getHeaders("Accept").nextElement();
+        try {
+            City city = cityService.getCityById(id);
+            String responseBody = objectMapper.writerWithView(City.class).writeValueAsString(city);
+            processResponse(response, responseBody);
+            logger.info("Finished getting city: {} in {} ms", city, startTime - System.currentTimeMillis());
 
-        if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
-            try {
-                City city = cityService.getCityById(id);
-                String xml = xmlMapper.writerWithView(City.class).writeValueAsString(city);
-                response.setContentType(MimeType.APPLICATION_XML.getValue());
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(xml);
-
-            } catch (NoDataFoundException e) {
-                logger.warn("The city with id: {} is not found", id);
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        } catch (NoDataFoundException e) {
+            logger.warn("The city with id: {} is not found", id);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
-        logger.info("Finished getting city with id in {} ms", startTime - System.currentTimeMillis());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String cityJson = getRequestBody(request);
         City city = objectMapper.readValue(cityJson, City.class);
 
         City addedCity = cityService.add(city);
         logger.info("City is successfully added {}", city);
 
-        String xml = objectMapper.writeValueAsString(addedCity);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MimeType.APPLICATION_JSON.getValue());
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(xml);
+        String responseBody = objectMapper.writeValueAsString(addedCity);
+        processResponse(response, responseBody);
 
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-
         cityService.delete(id);
-        logger.info("City with id {} is successfully deleted", id);
-
         response.setStatus(HttpServletResponse.SC_OK);
+        logger.info("City with id {} is successfully deleted", id);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String cityJson = getRequestBody(request);
         City city = objectMapper.readValue(cityJson, City.class);
 
         City updatedCity = cityService.update(city);
         logger.info("City is successfully updated {}", city);
 
-        String json = objectMapper.writeValueAsString(updatedCity);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MimeType.APPLICATION_JSON.getValue());
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        String responseBody = objectMapper.writeValueAsString(updatedCity);
+        processResponse(response, responseBody);
     }
 
     private String getRequestBody(HttpServletRequest request) throws IOException {
@@ -98,6 +79,13 @@ public class CityServlet extends HttpServlet {
             buffer.append(line);
         }
         return buffer.toString();
+    }
+
+    private void processResponse(HttpServletResponse response, String responseBody) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MimeType.APPLICATION_JSON.getValue());
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(responseBody);
     }
 }
 

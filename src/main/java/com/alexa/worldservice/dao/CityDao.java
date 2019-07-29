@@ -1,4 +1,4 @@
-package com.alexa.worldservice.dao.jdbc;
+package com.alexa.worldservice.dao;
 
 import com.shelberg.entity.City;
 import com.shelberg.entity.SearchCity;

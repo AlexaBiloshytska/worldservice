@@ -19,26 +19,14 @@ public class JdbcCountryDao implements CountryDao {
     private static final Logger logger = LoggerFactory.getLogger(JdbcCountryDao.class);
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
     private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
-    public static final String GET_CAPITAL_NAME = "select c.id from city c where c.name = ?";
-    private static final String GET_LANGUAGE_STATISTICS = "select c.name, " +
-            "c.continent, " +
-            "c.region, " +
-            "c.surfacearea, " +
-            "c.indepyear, " +
-            "c.population, " +
+    private static final String GET_CAPITAL_NAME = "select c.id from city c where c.name = ?";
+    private static final String GET_LANGUAGE_STATISTICS = "select c.*, " +
             "l.language, " +
             "l.isOfficial, " +
-            "l.percentage, " +
-            "c.lifeexpectancy, " +
-            "c.governmentform, " +
-            "c.headofstate, " +
-            "ct.name as capital, " +
-            "c.code, " +
-            "c.code2 " +
+            "l.percentage " +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
-            "left join city as ct on ct.id=c.capital " +
-            "where c.code = ?";
+            "where c.name = ?";
 
     private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
             "c.continent,c.region,c.surfacearea," +
@@ -99,12 +87,12 @@ public class JdbcCountryDao implements CountryDao {
         this.dataSource = dataSource;
     }
 
-    public Country getCountry(String code) {
+    public Country getCountryStatistics(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
             logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
 
-            preparedStatement.setString(1, code);
+            preparedStatement.setString(1, name);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {

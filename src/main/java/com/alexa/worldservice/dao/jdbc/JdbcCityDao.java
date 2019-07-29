@@ -1,5 +1,6 @@
 package com.alexa.worldservice.dao.jdbc;
 
+import com.alexa.worldservice.dao.CityDao;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.mapper.CityMapper;
 import com.alexa.worldservice.mapper.SearchCityMapper;

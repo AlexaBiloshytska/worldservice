@@ -8,7 +8,7 @@ import com.shelberg.search.CountrySearchQuery;
 import java.util.List;
 
 public interface CountryDao {
-    Country getCountry(String name);
+    Country getCountryStatistics(String name);
 
     List<Country> getCountriesByLanguage(String language);
 

@@ -14,8 +14,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public Country getCountry(String code) {
-        return countryDao.getCountry(code);
+    public Country getCountryStatistics(String name) {
+        return countryDao.getCountryStatistics(name);
     }
 
     @Override
@@ -36,6 +36,11 @@ public class DefaultCountryService implements CountryService {
     @Override
     public List<Country> getCountriesByCriteria(CountrySearchQuery countrySearchQuery) {
         return countryDao.searchByCriteria(countrySearchQuery);
+    }
+
+    @Override
+    public Country getByCode(String code) {
+        return countryDao.getCountryByCode(code);
     }
 
     @Override

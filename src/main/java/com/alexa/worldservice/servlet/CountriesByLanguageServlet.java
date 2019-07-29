@@ -22,7 +22,6 @@ public class CountriesByLanguageServlet extends HttpServlet {
     private final ObjectMapper mapper = ServiceLocator.get(ObjectMapper.class);
     private final CountryService countryService = ServiceLocator.get(CountryService.class);
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();

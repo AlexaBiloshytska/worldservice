@@ -23,7 +23,6 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/api/v1/countries")
 public class CountryServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private XmlMapper xmlMapper = ServiceLocator.get(XmlMapper.class);
     private final ObjectMapper mapper = ServiceLocator.get(ObjectMapper.class);
     private CountryService countryService = ServiceLocator.get(CountryService.class);
 
@@ -31,59 +30,39 @@ public class CountryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
         String code = request.getParameter("code");
-        String acceptType = request.getHeaders("Accept").nextElement();
 
-        logger.info("Getting country with country name {} ", code);
-
-        if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
-            try {
-                Country country = countryService.getCountry(code);
-                String xml = xmlMapper.writerWithView(CountrySearch.class).writeValueAsString(country);
-                response.setContentType(MimeType.APPLICATION_XML.getValue());
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(xml);
-            } catch (NoDataFoundException e) {
-                logger.warn("The country with name: {} is not found", code);
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+        logger.info("Getting country with country code {} ", code);
+        try {
+            Country country = countryService.getByCode(code);
+            String responseJson = mapper.writerWithView(CountrySearch.class).writeValueAsString(country);
+            processResponse(response, responseJson);
+            logger.info("Finished getting country: {} in {} ms", country, startTime - System.currentTimeMillis());
+        } catch (NoDataFoundException e) {
+            logger.warn("The country with code: {} is not found", code);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
-        logger.info("Finished getting country language statistics in {} ms", startTime - System.currentTimeMillis());
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         String countryJson = getRequestBody(request);
-
         Country country = mapper.readValue(countryJson, Country.class);
-
         Country addedCountry = countryService.add(country);
-        String json = mapper.writeValueAsString(addedCountry);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MimeType.APPLICATION_JSON.getValue());
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
-        logger.info("Country is successfully added {}", country);
 
+        String responseJson = mapper.writerWithView(CountrySearch.class).writeValueAsString(addedCountry);
+        processResponse(response, responseJson);
+
+        logger.info("Country is successfully added {}", country);
     }
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String countryJson = getRequestBody(request);
         Country country = mapper.readValue(countryJson, Country.class);
-
         Country updatedCountry = countryService.update(country);
 
-        String json = mapper.writeValueAsString(updatedCountry);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MimeType.APPLICATION_JSON.getValue());
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
-
+        String responseJson = mapper.writerWithView(CountrySearch.class).writeValueAsString(updatedCountry);
+        processResponse(response, responseJson);
         logger.info("Country is successfully updated {}", country);
     }
 
@@ -109,6 +88,13 @@ public class CountryServlet extends HttpServlet {
             buffer.append(line);
         }
         return buffer.toString();
+    }
+
+    private void processResponse(HttpServletResponse response, String responseBody) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MimeType.APPLICATION_JSON.getValue());
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(responseBody);
     }
 }
 
