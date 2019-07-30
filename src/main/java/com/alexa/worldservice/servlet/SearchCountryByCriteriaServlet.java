@@ -49,7 +49,7 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
 
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<Country> country = countryService.getCountriesByCriteria(countrySearchQuery);
-            String xml = xmlMapper.writerWithView(Views.CountryData.class).writeValueAsString(country);
+            String xml = xmlMapper.writerWithView(Views.CountrySearch.class).writeValueAsString(country);
             response.setContentType(MimeType.APPLICATION_XML.getValue());
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);

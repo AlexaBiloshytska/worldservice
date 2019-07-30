@@ -109,9 +109,10 @@ public class JdbcCityDao implements CityDao {
             logger.info("City with name: {} is successfully inserted", city.getName());
 
 
-            ResultSet generatedKeys = addCity.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return CITY_MAPPER.mapRow(generatedKeys);
+            try(ResultSet generatedKeys = addCity.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return CITY_MAPPER.mapRow(generatedKeys);
+                }
             }
             throw new RuntimeException("Unable to get generated keys after city insert: " + city);
 
@@ -133,9 +134,10 @@ public class JdbcCityDao implements CityDao {
 
             updateCity.executeUpdate();
 
-            ResultSet generatedKeys = updateCity.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return CITY_MAPPER.mapRow(generatedKeys);
+            try(ResultSet generatedKeys = updateCity.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return CITY_MAPPER.mapRow(generatedKeys);
+                }
             }
             throw new RuntimeException("Unable to get generated keys after city update: " + city);
 

@@ -99,7 +99,6 @@ public class JdbcCountryDao implements CountryDao {
                     logger.warn("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
-
                 Country country = COUNTRY_MAPPER.mapRow(resultSet);
 
                 List<Language> languages = new ArrayList<>();
@@ -196,9 +195,10 @@ public class JdbcCountryDao implements CountryDao {
             capitalStatement.setString(1, country.getCapital());
             countryProcessing(country, capitalStatement, addCountry);
 
-            ResultSet generatedKeys = addCountry.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return COUNTRY_MAPPER.mapRow(generatedKeys);
+            try(ResultSet generatedKeys = addCountry.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return COUNTRY_MAPPER.mapRow(generatedKeys);
+                }
             }
             logger.info("Country is successfully inserted {}", country);
             throw new RuntimeException("Unable to add country:" + country);
@@ -223,7 +223,6 @@ public class JdbcCountryDao implements CountryDao {
         } catch (SQLException e) {
             throw new RuntimeException("Unable to delete country", e);
         }
-
     }
 
     @Override
@@ -238,9 +237,10 @@ public class JdbcCountryDao implements CountryDao {
             countryProcessing(country, capitalStatement, updateCountry);
             logger.info("Country is successfully updated {}", country);
 
-            ResultSet generatedKeys = updateCountry.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return COUNTRY_MAPPER.mapRow(generatedKeys);
+            try(ResultSet generatedKeys = updateCountry.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return COUNTRY_MAPPER.mapRow(generatedKeys);
+                }
             }
             throw new RuntimeException("Unable to get generated keys after country update: " + country);
 
