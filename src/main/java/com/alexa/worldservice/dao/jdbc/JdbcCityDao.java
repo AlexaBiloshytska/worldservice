@@ -45,6 +45,7 @@ public class JdbcCityDao implements CityDao {
     @Override
     public List<SearchCity> searchCityByCriteria(CitySearchQuery citySearchQuery) {
         String getCityQuery = getCityByCriteriaQuery(citySearchQuery);
+        logger.info("Starting getting the city with parameters {}", getCityQuery);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -54,6 +55,7 @@ public class JdbcCityDao implements CityDao {
                 while (resultSet.next()) {
                     cities.add(SEARCH_CITY_MAPPER.mapRow(resultSet, citySearchQuery));
                 }
+                logger.info("Getting city by criteria {}", cities);
                 return cities;
             }
         } catch (SQLException e) {
@@ -100,6 +102,8 @@ public class JdbcCityDao implements CityDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement addCity = connection.prepareStatement(ADD_CITY, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
+            logger.info("Executing SQL query {}", ADD_CITY);
+
             addCity.setString(1, city.getName());
             addCity.setString(2, city.getCountryCode());
             addCity.setString(3, city.getDistrict());
@@ -126,6 +130,8 @@ public class JdbcCityDao implements CityDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement updateCity = connection.prepareStatement(UPDATE_CITY, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
+            logger.info("Executing SQL query {}", UPDATE_CITY);
+
             updateCity.setString(1, city.getName());
             updateCity.setString(2, city.getCountryCode());
             updateCity.setString(3, city.getDistrict());
@@ -151,6 +157,8 @@ public class JdbcCityDao implements CityDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CITY)) {
 
+            logger.info("Executing SQL query {}", DELETE_CITY);
+
             preparedStatement.setInt(1, id);
 
             preparedStatement.execute();
@@ -164,6 +172,7 @@ public class JdbcCityDao implements CityDao {
 
     @Override
     public City getCityById(int id) {
+        logger.info("Getting city with id: {} ", id);
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CITY_BY_ID)) {
 
@@ -173,6 +182,7 @@ public class JdbcCityDao implements CityDao {
                     logger.error("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
+                logger.info("Finishing getting city with id: {} ", id);
                 return CITY_MAPPER.mapRow(resultSet);
             }
         } catch (SQLException e) {

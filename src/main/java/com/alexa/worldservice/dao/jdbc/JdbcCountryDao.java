@@ -90,7 +90,7 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountryStatistics(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
-            logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
+            logger.info("Executing SQL query: {}", GET_LANGUAGE_STATISTICS);
 
             preparedStatement.setString(1, name);
 
@@ -108,6 +108,7 @@ public class JdbcCountryDao implements CountryDao {
                 }
 
                 country.setLanguageList(languages);
+                logger.info("Getting the country with name: {}", country);
                 return country;
             }
         } catch (SQLException e) {
@@ -120,7 +121,7 @@ public class JdbcCountryDao implements CountryDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRIES_BY_LANGUAGE)) {
 
-            logger.info("Getting data from SQL query {}: ", GET_COUNTRIES_BY_LANGUAGE);
+            logger.info("Executing SQL query {}: ", GET_COUNTRIES_BY_LANGUAGE);
             preparedStatement.setString(1, language);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -128,6 +129,7 @@ public class JdbcCountryDao implements CountryDao {
                 while (resultSet.next()) {
                     countries.add(COUNTRY_MAPPER.mapRow(resultSet));
                 }
+                logger.info("Getting countries by language: {}",countries);
                 return countries;
             }
         } catch (SQLException e) {
@@ -139,6 +141,7 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public List<Country> searchByCriteria(CountrySearchQuery countrySearchQuery) {
         String criteriaQuery = getCountryCriteriaQuery(countrySearchQuery);
+        logger.info("Executing SQL query {}: ", countrySearchQuery);
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -148,6 +151,7 @@ public class JdbcCountryDao implements CountryDao {
                 while (resultSet.next()) {
                     countries.add(COUNTRY_MAPPER.mapRow(resultSet));
                 }
+                logger.info("Getting countries with criteria {}",countries);
                 return countries;
             }
         } catch (SQLException e) {
@@ -157,6 +161,7 @@ public class JdbcCountryDao implements CountryDao {
 
     String getCountryCriteriaQuery(CountrySearchQuery countrySearchQuery) {
         StringBuilder stringBuilder = new StringBuilder(GET_COUNTRY_BY_CRITERIA);
+        logger.info("Starting getting country with parameters {}", stringBuilder);
         if (countrySearchQuery.getName() != null && !countrySearchQuery.getName().isEmpty()) {
             stringBuilder
                     .append(" AND lower(c.name) like '%")
@@ -182,6 +187,7 @@ public class JdbcCountryDao implements CountryDao {
                     .append(" OFFSET ")
                     .append(offset);
         }
+        logger.info("Finishing getting country with parameters{}", stringBuilder);
         return stringBuilder.toString();
     }
 
@@ -192,6 +198,7 @@ public class JdbcCountryDao implements CountryDao {
              PreparedStatement addCountry = connection.prepareStatement(ADD_COUNTRY,
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
+            logger.info("Executing SQL query {}: ",ADD_COUNTRY);
             capitalStatement.setString(1, country.getCapital());
             countryProcessing(country, capitalStatement, addCountry);
 
@@ -213,9 +220,9 @@ public class JdbcCountryDao implements CountryDao {
     public int delete(String code) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deleteCountry = connection.prepareStatement(DELETE_COUNTRY_BY_CODE)) {
+            logger.info("Executing SQL query {}", DELETE_COUNTRY_BY_CODE);
 
             deleteCountry.setString(1, code);
-
             int affectedRows = deleteCountry.executeUpdate();
 
             logger.info("Deleting country with name {}", code);
@@ -231,6 +238,8 @@ public class JdbcCountryDao implements CountryDao {
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
              PreparedStatement updateCountry = connection.prepareStatement(UPDATE_COUNTRY,
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            logger.info("Executing SQL query {}", UPDATE_COUNTRY);
 
             capitalStatement.setString(1, country.getCapital());
 
@@ -253,6 +262,8 @@ public class JdbcCountryDao implements CountryDao {
     public Country getCountryByCode(String code) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNTRY_BY_CODE)) {
+
+            logger.info("Executing SQL query {}", GET_COUNTRY_BY_CODE);
 
             preparedStatement.setString(1, code);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
