@@ -1,6 +1,6 @@
 package com.alexa.worldservice.service;
 
-import com.alexa.worldservice.dao.jdbc.CityDao;
+import com.alexa.worldservice.dao.CityDao;
 import com.shelberg.entity.City;
 import com.shelberg.entity.SearchCity;
 import com.shelberg.search.CitySearchQuery;
@@ -20,13 +20,14 @@ public class DefaultCityService implements CityService {
     }
 
     @Override
-    public void add(City city) {
-        cityDao.add(city);
+    public City add(City city) {
+        return cityDao.add(city);
     }
 
     @Override
-    public void update(City city) {
-        cityDao.update(city);
+    public City update(City city) {
+
+        return  cityDao.update(city);
     }
 
     @Override

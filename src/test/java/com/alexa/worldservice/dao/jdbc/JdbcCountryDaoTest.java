@@ -34,7 +34,7 @@ public class JdbcCountryDaoTest {
         String code = "AGO";
 
         // Execute
-        Country country = jdbcCountryDao.getCountry(code);
+        Country country = jdbcCountryDao.getCountryStatistics(code);
 
         Assert.assertEquals("AGO", country.getCode());
         Assert.assertEquals("Angola", country.getName());

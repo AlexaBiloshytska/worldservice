@@ -8,15 +8,15 @@ import com.shelberg.search.CountrySearchQuery;
 import java.util.List;
 
 public interface CountryDao {
-    Country getCountry(String name);
+    Country getCountryStatistics(String name);
 
     List<Country> getCountriesByLanguage(String language);
 
-    void add(Country country);
+    Country add(Country country);
 
     int delete(String code);
 
-    int update(Country country);
+    Country update(Country country);
 
     Country getCountryByCode (String code);
 

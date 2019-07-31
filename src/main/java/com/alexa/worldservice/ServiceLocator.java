@@ -1,7 +1,7 @@
 package com.alexa.worldservice;
 
 import com.alexa.worldservice.dao.CountryDao;
-import com.alexa.worldservice.dao.jdbc.CityDao;
+import com.alexa.worldservice.dao.CityDao;
 import com.alexa.worldservice.dao.jdbc.JdbcCityDao;
 import com.alexa.worldservice.dao.jdbc.JdbcCountryDao;
 import com.alexa.worldservice.service.CityService;

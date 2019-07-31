@@ -14,8 +14,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public Country getCountry(String code) {
-        return countryDao.getCountry(code);
+    public Country getCountryStatistics(String name) {
+        return countryDao.getCountryStatistics(name);
     }
 
     @Override
@@ -24,8 +24,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public void add(Country country) {
-        countryDao.add(country);
+    public Country add(Country country) {
+       return countryDao.add(country);
     }
 
     @Override
@@ -39,7 +39,12 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public int update(Country country) {
+    public Country getByCode(String code) {
+        return countryDao.getCountryByCode(code);
+    }
+
+    @Override
+    public Country update(Country country) {
         return countryDao.update(country);
     }
 }

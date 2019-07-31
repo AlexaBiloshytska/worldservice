@@ -1,4 +1,4 @@
-package com.alexa.worldservice.dao.jdbc;
+package com.alexa.worldservice.dao;
 
 import com.shelberg.entity.City;
 import com.shelberg.entity.SearchCity;
@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface CityDao {
 
-    void add(City city);
+    City add(City city);
 
-    void update(City city);
+    City update(City city);
 
     void delete(int id);
 

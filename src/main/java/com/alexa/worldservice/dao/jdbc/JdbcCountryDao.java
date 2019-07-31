@@ -2,8 +2,8 @@ package com.alexa.worldservice.dao.jdbc;
 
 import com.alexa.worldservice.dao.CountryDao;
 import com.alexa.worldservice.exception.NoDataFoundException;
-import com.alexa.worldservice.mapper.LanguageMapper;
 import com.alexa.worldservice.mapper.CountryMapper;
+import com.alexa.worldservice.mapper.LanguageMapper;
 import com.shelberg.entity.Country;
 import com.shelberg.entity.Language;
 import com.shelberg.search.CountrySearchQuery;
@@ -19,25 +19,14 @@ public class JdbcCountryDao implements CountryDao {
     private static final Logger logger = LoggerFactory.getLogger(JdbcCountryDao.class);
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
     private static final LanguageMapper COUNTRY_LANGUAGE_MAPPER = new LanguageMapper();
-    public static final String GET_CAPITAL_NAME = "select c.id from city c where c.name = ?";
-    private static final String GET_LANGUAGE_STATISTICS = "select c.name, " +
-            "c.continent, " +
-            "c.region, " +
-            "c.surfacearea, " +
-            "c.indepyear, " +
-            "c.population, " +
+    private static final String GET_CAPITAL_NAME = "select c.id from city c where c.name = ?";
+    private static final String GET_LANGUAGE_STATISTICS = "select c.*, " +
             "l.language, " +
             "l.isOfficial, " +
-            "l.percentage, " +
-            "c.lifeexpectancy, " +
-            "c.governmentform, " +
-            "c.headofstate, " +
-            "c.capital, " +
-            "c.code, " +
-            "c.code2 " +
+            "l.percentage " +
             "from country as c " +
             "inner join country_language as l ON c.code = l.countrycode " +
-            "where c.code = ?";
+            "where c.name = ?";
 
     private static final String GET_COUNTRIES_BY_LANGUAGE = "select c.code,c.name, " +
             "c.continent,c.region,c.surfacearea," +
@@ -65,17 +54,17 @@ public class JdbcCountryDao implements CountryDao {
 
     private static final String ADD_COUNTRY =
             "INSERT INTO country (name," +
-            "continent," +
-            "region," +
-            "surfacearea," +
-            "indepyear," +
-            "population," +
-            "lifeexpectancy," +
-            "governmentform," +
-            "headofstate, " +
-            "capital, " +
-            "code2," +
-            "code) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+                    "continent," +
+                    "region," +
+                    "surfacearea," +
+                    "indepyear," +
+                    "population," +
+                    "lifeexpectancy," +
+                    "governmentform," +
+                    "headofstate, " +
+                    "capital, " +
+                    "code2," +
+                    "code) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String UPDATE_COUNTRY = "UPDATE country set " +
             "name=?, " +
@@ -98,19 +87,18 @@ public class JdbcCountryDao implements CountryDao {
         this.dataSource = dataSource;
     }
 
-    public Country getCountry(String code) {
+    public Country getCountryStatistics(String name) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LANGUAGE_STATISTICS)) {
             logger.info("Getting data from SQL query: {}", GET_LANGUAGE_STATISTICS);
 
-            preparedStatement.setString(1, code);
+            preparedStatement.setString(1, name);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {
                     logger.warn("resultSet is empty");
                     throw new NoDataFoundException("Non-empty resultSet expected");
                 }
-
                 Country country = COUNTRY_MAPPER.mapRow(resultSet);
 
                 List<Language> languages = new ArrayList<>();
@@ -198,20 +186,26 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void add(Country country) {
+    public Country add(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
-             PreparedStatement addCountry = connection.prepareStatement(ADD_COUNTRY)) {
+             PreparedStatement addCountry = connection.prepareStatement(ADD_COUNTRY,
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             capitalStatement.setString(1, country.getCapital());
-
             countryProcessing(country, capitalStatement, addCountry);
+
+            try(ResultSet generatedKeys = addCountry.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return COUNTRY_MAPPER.mapRow(generatedKeys);
+                }
+            }
             logger.info("Country is successfully inserted {}", country);
+            throw new RuntimeException("Unable to add country:" + country);
 
         } catch (SQLException e) {
             logger.error("Unable to insert data in sql table {}", country);
             throw new RuntimeException("Unable to save country: " + country, e);
-
         }
     }
 
@@ -229,21 +223,27 @@ public class JdbcCountryDao implements CountryDao {
         } catch (SQLException e) {
             throw new RuntimeException("Unable to delete country", e);
         }
-
     }
 
     @Override
-    public int update(Country country) {
+    public Country update(Country country) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement capitalStatement = connection.prepareStatement(GET_CAPITAL_NAME);
-             PreparedStatement updateCountry = connection.prepareStatement(UPDATE_COUNTRY)) {
+             PreparedStatement updateCountry = connection.prepareStatement(UPDATE_COUNTRY,
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             capitalStatement.setString(1, country.getCapital());
 
-            int affectedRows = countryProcessing(country, capitalStatement, updateCountry);
+            countryProcessing(country, capitalStatement, updateCountry);
             logger.info("Country is successfully updated {}", country);
 
-            return affectedRows;
+            try(ResultSet generatedKeys = updateCountry.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return COUNTRY_MAPPER.mapRow(generatedKeys);
+                }
+            }
+            throw new RuntimeException("Unable to get generated keys after country update: " + country);
+
         } catch (SQLException e) {
             throw new RuntimeException("Unable to update country", e);
         }
