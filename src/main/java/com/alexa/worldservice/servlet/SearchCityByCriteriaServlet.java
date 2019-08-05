@@ -23,6 +23,7 @@ public class SearchCityByCriteriaServlet extends HttpServlet {
     private final CityService cityService = ServiceLocator.get(CityService.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long startTime = System.currentTimeMillis();
         String country = request.getParameter("country");
         String name = request.getParameter("name");
         String continent = request.getParameter("continent");
@@ -44,6 +45,8 @@ public class SearchCityByCriteriaServlet extends HttpServlet {
         if (acceptType.contains(MimeType.APPLICATION_XML.getValue())) {
             List<SearchCity> cities = cityService.getCitiesByCriteria(citySearchQuery);
             String xml = xmlMapper.writeValueAsString(cities);
+
+            logger.info("Finishing getting city with paramenters {}, in {} ms", xml, startTime - System.currentTimeMillis());
             response.setContentType(MimeType.APPLICATION_XML.getValue());
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);

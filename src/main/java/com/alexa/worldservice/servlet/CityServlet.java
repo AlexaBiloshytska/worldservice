@@ -5,7 +5,6 @@ import com.alexa.worldservice.constant.MimeType;
 import com.alexa.worldservice.exception.NoDataFoundException;
 import com.alexa.worldservice.service.CityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.shelberg.entity.City;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +24,13 @@ public class CityServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         long startTime = System.currentTimeMillis();
-
         int id = Integer.parseInt(request.getParameter("id"));
+
         try {
             City city = cityService.getCityById(id);
             String responseBody = objectMapper.writerWithView(City.class).writeValueAsString(city);
             processResponse(response, responseBody);
             logger.info("Finished getting city: {} in {} ms", city, startTime - System.currentTimeMillis());
-
         } catch (NoDataFoundException e) {
             logger.warn("The city with id: {} is not found", id);
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -26,6 +26,7 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long startTime = System.currentTimeMillis();
         String name = request.getParameter("name");
         String continent = request.getParameter("continent");
 
@@ -53,6 +54,7 @@ public class SearchCountryByCriteriaServlet extends HttpServlet {
             response.setContentType(MimeType.APPLICATION_XML.getValue());
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
+            logger.info("Finishing getting country with parameters {} in {} ms", xml, startTime - System.currentTimeMillis());
             response.getWriter().print(xml);
         } else {
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
